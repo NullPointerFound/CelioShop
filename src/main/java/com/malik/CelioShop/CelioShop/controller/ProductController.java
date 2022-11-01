@@ -1,8 +1,8 @@
 package com.malik.CelioShop.CelioShop.controller;
 
 import com.malik.CelioShop.CelioShop.entity.ProductCategory;
+import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;
 import com.malik.CelioShop.CelioShop.playload.ProductDto;
-import com.malik.CelioShop.CelioShop.service.Impl.ProductServiceImpl;
 import com.malik.CelioShop.CelioShop.service.ProductCategoryService;
 import com.malik.CelioShop.CelioShop.service.ProductService;
 import lombok.AllArgsConstructor;
@@ -21,9 +21,9 @@ public class ProductController {
     private ProductCategoryService productCategoryService;
 
     @PostMapping
-    public ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto productDto){
-        ProductCategory productCategory = productCategoryService.getProductCategoryById(productDto.getProductCategoryId());
-        return new ResponseEntity<>(productService.addProduct(productDto,productCategory), HttpStatus.CREATED);
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto){
+        ProductCategoryDto productCategoryDto = productCategoryService.getProductCategoryById(productDto.getProductCategoryId());
+        return new ResponseEntity<>(productService.createProduct(productDto,productCategoryDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
@@ -32,22 +32,22 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductDto> getProductById(){
-        return productService.getAllProduct();
+    public List<ProductDto> getProducts(){
+        return productService.getAllProducts();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProductById(@PathVariable Long productId){
         productService.deleteProductById(productId);
-        return ResponseEntity.ok("Product with %s has been delete successfully"+productId);
+        return ResponseEntity.ok("Product with ID : %s has been delete successfully"+productId);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updateProductById(@PathVariable Long productId, @RequestBody ProductDto updatedProductDto){
 
         productService.updateProductById(productId);
-        return ResponseEntity.ok("Product with %s has been updated successfully");
+        return ResponseEntity.ok("Product with ID : %s has been updated successfully");
     }
-    
+
 
 }

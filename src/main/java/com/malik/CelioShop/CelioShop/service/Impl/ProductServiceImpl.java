@@ -1,7 +1,9 @@
 package com.malik.CelioShop.CelioShop.service.Impl;
 
+import com.malik.CelioShop.CelioShop.Utils.Mapper;
 import com.malik.CelioShop.CelioShop.entity.Product;
 import com.malik.CelioShop.CelioShop.entity.ProductCategory;
+import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;
 import com.malik.CelioShop.CelioShop.playload.ProductDto;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.service.ProductService;
@@ -18,12 +20,12 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
 
     @Override
-    public ProductDto addProduct(ProductDto productDto, ProductCategory productCategory) {
+    public ProductDto createProduct(ProductDto productDto, ProductCategoryDto productCategoryDto) {
 
-        Product newProduct = mapToProduct(productDto,productCategory);
+        Product newProduct = Mapper.mapToProduct(productDto,Mapper.mapToProductCategory(productCategoryDto));
         Product savedProduct = productRepository.save(newProduct);
 
-        return mapToProductDto(savedProduct);
+        return Mapper.mapToProductDto(savedProduct);
     }
 
     @Override
@@ -32,14 +34,14 @@ public class ProductServiceImpl implements ProductService {
                 ()-> new RuntimeException("Product doesn't exist")
         );
 
-        return mapToProductDto(product);
+        return Mapper.mapToProductDto(product);
     }
 
     @Override
-    public List<ProductDto> getAllProduct() {
+    public List<ProductDto> getAllProducts() {
         List<Product> products = productRepository.findAll();
 
-        List<ProductDto> productDtoList = products.stream().map( product -> mapToProductDto(product)).collect(Collectors.toList());
+        List<ProductDto> productDtoList = products.stream().map( product -> Mapper.mapToProductDto(product)).collect(Collectors.toList());
 
         return productDtoList;
     }
@@ -57,36 +59,5 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    // method to map from Product Entity to Product DTO
-    private ProductDto mapToProductDto(Product product){
 
-        ProductDto productDto = new ProductDto();
-        productDto.setId(product.getId());
-        productDto.setName(product.getName());
-        productDto.setDescription(product.getDescription());
-        productDto.setSku(product.getSku());
-        productDto.setPrice(product.getPrice());
-        productDto.setQuantity(product.getQuantity());
-        productDto.setImgUrl(product.getImgUrl());
-        productDto.setProductCategoryId(product.getProductCategory().getId());
-        productDto.setCreationDate(product.getCreationDate());
-        productDto.setUpdateDate(product.getUpdateDate());
-
-        return productDto;
-    }
-
-    // method to map from Product DTO to Product Entity
-    private Product mapToProduct(ProductDto productDto,ProductCategory productCategory){
-        Product product = new Product();
-
-        product.setName(productDto.getName());
-        product.setDescription(productDto.getDescription());
-        product.setSku(productDto.getSku());
-        product.setPrice(productDto.getPrice());
-        product.setQuantity(productDto.getQuantity());
-        product.setImgUrl(productDto.getImgUrl());
-        product.setProductCategory(productCategory);
-
-        return product;
-    }
 }
