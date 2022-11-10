@@ -1,14 +1,19 @@
 package com.malik.CelioShop.CelioShop.entity;
 
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@Builder
 @Entity
 @Table(name = "product")
 public class Product {
@@ -44,8 +49,38 @@ public class Product {
     @UpdateTimestamp
     private LocalDateTime updateDate;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL},
+            optional = true)
     @JoinColumn(name = "Category_id")
     private ProductCategory productCategory;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product)) return false;
+        Product product = (Product) o;
+        return getId().equals(product.getId()) && getName().equals(product.getName()) && getDescription().equals(product.getDescription()) && getSku().equals(product.getSku()) && getPrice().equals(product.getPrice()) && getQuantity().equals(product.getQuantity()) && Objects.equals(getImgUrl(), product.getImgUrl()) && Objects.equals(getCreationDate(), product.getCreationDate()) && Objects.equals(getUpdateDate(), product.getUpdateDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getDescription(), getSku(), getPrice(), getQuantity(), getImgUrl(), getCreationDate(), getUpdateDate());
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", sku='" + sku + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", imgUrl='" + imgUrl + '\'' +
+                ", creationDate=" + creationDate +
+                ", updateDate=" + updateDate +
+                ", productCategory=" + productCategory +
+                '}';
+    }
 }

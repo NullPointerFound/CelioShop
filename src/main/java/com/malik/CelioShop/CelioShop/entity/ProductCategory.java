@@ -1,11 +1,18 @@
 package com.malik.CelioShop.CelioShop.entity;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
+@Builder
 @Entity
 @Table(name = "Product_Category")
 public class ProductCategory {
@@ -21,6 +28,38 @@ public class ProductCategory {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "productCategory")
+    @JsonIgnore
+    @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL)
     private Set<Product> productSet;
+
+    public void addProduct(Product product){
+        productSet.add(product);
+        product.setProductCategory(this);
+    }
+    public void removeProduct(Product product){
+        productSet.remove(product);
+        product.setProductCategory(null);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProductCategory)) return false;
+        ProductCategory that = (ProductCategory) o;
+        return id.equals(that.id) && name.equals(that.name) && Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description);
+    }
+
+    @Override
+    public String toString() {
+        return "ProductCategory{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

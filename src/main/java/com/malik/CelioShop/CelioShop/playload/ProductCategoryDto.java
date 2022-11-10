@@ -13,5 +13,5 @@ public class ProductCategoryDto {
     private Long id;
     private String name;
     private String description;
-    private Set<Product> productSet;
+    private Set<ProductDto> productSet;
 }

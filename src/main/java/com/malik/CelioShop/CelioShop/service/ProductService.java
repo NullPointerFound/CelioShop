@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+
 public interface ProductService {
-    ProductDto createProduct(ProductDto productDto, ProductCategoryDto productCategoryDto);
+    ProductDto createProduct(ProductDto productDto);
 
     ProductDto getProductById(Long productId);
 
