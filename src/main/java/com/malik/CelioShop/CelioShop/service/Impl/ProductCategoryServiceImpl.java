@@ -3,14 +3,18 @@ package com.malik.CelioShop.CelioShop.service.Impl;
 import com.malik.CelioShop.CelioShop.Utils.Mapper;
 import com.malik.CelioShop.CelioShop.entity.Product;
 import com.malik.CelioShop.CelioShop.entity.ProductCategory;
+import com.malik.CelioShop.CelioShop.exception.ResourceAlreadyExist;
+import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
 import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;
 import com.malik.CelioShop.CelioShop.repository.ProductCategoryRepository;
 import com.malik.CelioShop.CelioShop.service.ProductCategoryService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,47 +22,48 @@ import java.util.stream.Collectors;
 public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     private ProductCategoryRepository productCategoryRepository;
+    private ModelMapper modelMapper;
 
     @Override
-    public ProductCategoryDto getProductCategoryById(Long categoryId) {
+    public ProductCategoryDto getCategoryById(Long categoryId) {
+
+        // Retrieve the category in DB by ID and if it doesn't exist we throw exception
         ProductCategory productCategory = productCategoryRepository.findById(categoryId).orElseThrow(
-                () -> new RuntimeException("No category Found")
+                () -> new ResourceNotFound("Category","ID",categoryId)
         );
 
-
-        return Mapper.mapToProductCategoryDto(productCategory);
-    }
-
-
-    // it's used by product Controller
-    @Override
-    public ProductCategory findProductCategoryById(Long categoryId) {
-
-        //FOR LOCAL USE
-
-        ProductCategory productCategory = productCategoryRepository.findById(categoryId).orElseThrow(
-                () -> new RuntimeException("No category Found")
-        );
-        return productCategory;
+        // Return object retrieved (Category) after we convert it to DTO
+        return modelMapper.map(productCategory,ProductCategoryDto.class);
     }
 
     @Override
     public ProductCategoryDto createCategory(ProductCategoryDto productCategoryDto) {
 
-        ProductCategory newCategory = Mapper.mapToProductCategory(productCategoryDto); //create id
+        // Convert product category object to DTO
+        ProductCategory newCategory = modelMapper.map(productCategoryDto,ProductCategory.class);
 
+        // Check if the category already exist in DB id it does, we throw an exception
+        Optional<ProductCategory> category = productCategoryRepository.findByName(newCategory.getName());
 
+        if(category.isPresent()){
+            throw new ResourceAlreadyExist("Category","Name",newCategory.getName());
+        }
+
+        // we save the category in DB and save the returned object to new object savedCategory
         ProductCategory savedCategory = productCategoryRepository.save(newCategory);
 
-        return Mapper.mapToProductCategoryDto(savedCategory);
+        // we return savedCategory object after we convert it to DTO
+        return modelMapper.map(savedCategory,ProductCategoryDto.class);
     }
 
     @Override
     public List<ProductCategoryDto> getAllCategories() {
 
+        // Retrieve all categories in DB
         List<ProductCategory> categories = productCategoryRepository.findAll();
 
-        List<ProductCategoryDto> categoriesDto = categories.stream().map( category -> Mapper.mapToProductCategoryDto(category)).collect(Collectors.toList());
+        // We convert the categories found to DTO
+        List<ProductCategoryDto> categoriesDto = categories.stream().map( category -> modelMapper.map(category,ProductCategoryDto.class)).collect(Collectors.toList());
 
         return categoriesDto;
     }
@@ -66,13 +71,21 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Override
     public void deleteCategoryById(Long categoryId) {
 
-        if ( productCategoryRepository.existsById(categoryId)){ productCategoryRepository.deleteById(categoryId);}
-        else
-            throw new RuntimeException("No category was found");
+        // Check if the category exist in DB before delete it
+        ProductCategory category = productCategoryRepository.findById(categoryId).orElseThrow(
+                ()-> new ResourceNotFound("Category","ID",categoryId)
+        );
+
+        Set<Product> productSet = category.getProductSet();
+        productSet.stream().forEach( product -> product.setProductCategory(null));
+
+        productCategoryRepository.deleteById(categoryId);
+
     }
 
     @Override
     public void updateProductById(Long categoryId) {
 
     }
+
 }

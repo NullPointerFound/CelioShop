@@ -1,14 +1,16 @@
-package com.malik.CelioShop.CelioShop.entity;
+package com.malik.CelioShop.CelioShop.entity.review;
 
+import com.malik.CelioShop.CelioShop.entity.Product;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "Comment")
+@Table(name = "review")
 public class Review {
 
     @Id
@@ -22,11 +24,21 @@ public class Review {
     @Column(name = "comment")
     private String comment;
 
+    @Column(name = "vote")
+    private Integer vote;
+
     @CreationTimestamp
-    @Column(name = "Create_date_time")
+    @Column(name = "create_date_time")
     private LocalDateTime creationDate;
 
-    @ManyToOne(targetEntity = Product.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @UpdateTimestamp
+    @Column(name = "update_date_time")
+    private LocalDateTime updatedDate;
+
+    @Column(name = "rate")
+    private Integer rate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Product_id")
     private Product product;
 }

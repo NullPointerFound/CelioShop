@@ -3,17 +3,28 @@ package com.malik.CelioShop.CelioShop.service.Impl;
 import com.malik.CelioShop.CelioShop.Utils.Mapper;
 import com.malik.CelioShop.CelioShop.entity.Product;
 import com.malik.CelioShop.CelioShop.entity.ProductCategory;
+import com.malik.CelioShop.CelioShop.entity.ProductMedia;
+import com.malik.CelioShop.CelioShop.exception.ResourceAlreadyExist;
+import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
 import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;
 import com.malik.CelioShop.CelioShop.playload.ProductDto;
 import com.malik.CelioShop.CelioShop.repository.ProductCategoryRepository;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.service.ProductService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,60 +33,130 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
     private ProductCategoryRepository productCategoryRepository;
+    private ModelMapper modelMapper;
 
     @Override
-    public ProductDto createProduct(ProductDto productDto) {
+    public ProductDto createProduct(ProductDto productDto, String categoryName, MultipartFile media) throws IOException {
 
-        Product newProduct = Mapper.mapToProduct(productDto);
+        // Convert from DTO to Entity
+        Product newProduct = modelMapper.map(productDto,Product.class);
 
-        // for testing purposes only
-        // newProduct.setId(productDto.getId());
 
-        // Get the ID of the category
-        Long categoryId = productDto.getProductCategoryId();
-
-        // check if the category id is null
-        if (categoryId != null) {
+        // Check if the category exist
+        if (categoryName != null) {
 
             ProductCategory category = productCategoryRepository
-                    .findById(productDto.getProductCategoryId())
+                    .findByName(categoryName)
                     .orElseThrow(
-                            () -> new RuntimeException("No category found")
+                            () -> new ResourceNotFound("Category","name",categoryName)
                     );
 
+            // If the category exist we set the product to that category
             newProduct.setProductCategory(category);
         }
 
 
+        //  Check if there is a product in DB with the same SKU
+        Optional<Product> productExist = productRepository.findBySku(newProduct.getSku());
+
+        if ( productExist.isPresent()){
+            throw new ResourceAlreadyExist("Product","SKU",newProduct.getSku());
+        }
+
+
+        Set<ProductMedia> medias = uploadMedia(media,newProduct);
+
+
+        newProduct.setProductMedia(medias);
+
+        // Save the new product to DB
         Product savedProduct = productRepository.save(newProduct);
 
-        return Mapper.mapToProductDto(savedProduct);
+        // Return the entity after we convert to DTO
+        return modelMapper.map(savedProduct,ProductDto.class);
     }
+
+    public Set<ProductMedia> uploadMedia(MultipartFile multipartFiles, Product product) throws IOException {
+
+        Set<ProductMedia> productMediaSet = new HashSet<>();
+
+        String FOLDER_PATH = "/upload_dir/";
+        byte[] bytes = multipartFiles.getBytes();
+
+        Path path = Paths.get(FOLDER_PATH, multipartFiles.getOriginalFilename());
+
+        ProductMedia productMedia = new ProductMedia();
+        productMedia.setName(multipartFiles.getOriginalFilename());
+        productMedia.setType(multipartFiles.getContentType());
+        productMedia.setFilePath(String.valueOf(path));
+        productMedia.setProductId(product);
+
+        productMediaSet.add(productMedia);
+
+//           file.transferTo(path);
+        Files.write(path, bytes);
+
+        return productMediaSet;
+    }
+
+    public Set<ProductMedia> uploadMedia(MultipartFile[] multipartFiles) throws IOException {
+        Set<ProductMedia> productMediaSet = new HashSet<>();
+
+        String FOLDER_PATH = "/upload_dir/";
+
+        for ( MultipartFile file : multipartFiles  ){
+
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(FOLDER_PATH, file.getOriginalFilename());
+
+            ProductMedia productMedia = new ProductMedia(
+                    file.getOriginalFilename(), file.getContentType(), String.valueOf(path)
+            );
+            productMediaSet.add(productMedia);
+//            file.transferTo(path);
+            Files.write(path, bytes);
+        }
+
+        return productMediaSet;
+    }
+
+
+
+
+
 
     @Override
     public ProductDto getProductById(Long productId) {
+        // Retrieve the product by ID and if it doesn't exist we throw a Resource not found exception
         Product product = productRepository.findById(productId).orElseThrow(
-                ()-> new RuntimeException("Product doesn't exist")
+                ()-> new ResourceNotFound("Product","ID",productId)
         );
 
-        return Mapper.mapToProductDto(product);
+        // we return the product found after we convert it to DTO
+        return modelMapper.map(product,ProductDto.class);
     }
 
     @Override
     public List<ProductDto> getAllProducts() {
+
         List<Product> products = productRepository.findAll();
 
-        List<ProductDto> productDtoList = products.stream().map( product -> Mapper.mapToProductDto(product)).collect(Collectors.toList());
+        // Convert the entities found to DTOs
+        List<ProductDto> productDtoList = products.stream().map(
+                product -> modelMapper.map(product,ProductDto.class)
+                ).collect(Collectors.toList());
 
         return productDtoList;
     }
 
     @Override
     public void deleteProductById(Long productId) {
+        // Retrieve the product by ID and if it doesn't exist we throw a Resource not found exception
         Product product = productRepository.findById(productId).orElseThrow(
-                ()-> new RuntimeException("Product doesn't exist")
+                ()-> new ResourceNotFound("Product","ID",productId)
         );
 
+        // Delete the product
         productRepository.delete(product);
     }
 
@@ -83,6 +164,35 @@ public class ProductServiceImpl implements ProductService {
     public void updateProductById(Long productId) {
 
     }
+
+    @Override
+    public List<ProductDto> getProductsByCategoryId(Long categoryId) {
+
+        ProductCategory productCategory = productCategoryRepository.findById(categoryId).orElseThrow(
+                ()->  new ResourceNotFound("Category","ID",categoryId)
+        );
+            List<Product> productList = productRepository.findByProductCategory(productCategory);
+
+            return productList.stream().map(
+                        product -> modelMapper.map(product,ProductDto.class)
+                        ).collect(Collectors.toList());
+
+        }
+
+        @Override
+        public  List<ProductDto> searchProduct(String query){
+
+            System.out.println("Malik: "+query);
+            List<Product> productsFound = productRepository.searchProduct(query);
+            System.out.println(productsFound);
+            List<ProductDto> productFoundDto = productsFound.stream().map(
+                product -> modelMapper.map(product,ProductDto.class)
+                ).collect(Collectors.toList());
+
+        return productFoundDto;
+        }
+
+
 
 
 }

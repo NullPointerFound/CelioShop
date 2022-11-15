@@ -2,7 +2,9 @@ package com.malik.CelioShop.CelioShop.Repository;
 
 import com.malik.CelioShop.CelioShop.entity.Product;
 import com.malik.CelioShop.CelioShop.entity.ProductCategory;
+import com.malik.CelioShop.CelioShop.entity.review.Review;
 import com.malik.CelioShop.CelioShop.repository.ProductCategoryRepository;
+import com.malik.CelioShop.CelioShop.repository.ReviewRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,9 @@ public class ProductRepositoryTests {
 
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @DisplayName("JUnit test for save product operation")
     @Test
@@ -42,8 +47,7 @@ public class ProductRepositoryTests {
         // then - verify the output
         Assertions.assertThat(savedProduct).isNotNull();
         Assertions.assertThat(savedProduct.getId()).isGreaterThan(0);
-    }
-
+        }
 
         // JUit test for get all products
         @Test
@@ -139,6 +143,44 @@ public class ProductRepositoryTests {
             Assertions.assertThat(productList).isNotNull();
             Assertions.assertThat(productList.size()).isEqualTo(1);
 
-            }
+        }
+
+        @Test
+        public void givenProductId_whenUpdateAvgRateAndRateCount_thenUpdateAvgRateAndRateCount(){
+
+            //given - precondition or setup
+            Product newProduct = Product.builder()
+                    .name("Car with remote for kids")
+                    .description("Car with remote for kids")
+                    .sku("4658")
+                    .price(BigDecimal.valueOf(79.56))
+                    .quantity(45)
+                    .imgUrl("google.com")
+                    .build();
+
+            Review review = new Review();
+            review.setHeadline("I liked the product");
+            review.setComment("the product is Amazing");
+            review.setRate(5);
+            review.setProduct(newProduct);
+
+            productRepository.save(newProduct);
+            reviewRepository.save(review);
+
+            // when - action or the behaviour that we are going to test
+
+            productRepository.updateAvgRateAndRateCount(newProduct.getId());
+
+
+            Optional<Product> updatedProduct = productRepository.findById(newProduct.getId());
+
+            Optional<Review> savedReview = reviewRepository.findById(review.getId());
+
+            // then - verify the output
+            Assertions.assertThat(savedReview.get()).isNotNull();
+            Assertions.assertThat(updatedProduct.get().getAvgRate()).isNull();
+            Assertions.assertThat(updatedProduct.get().getRateCount()).isNull();
+
+        }
 
 }

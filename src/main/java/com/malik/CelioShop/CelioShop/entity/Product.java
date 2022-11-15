@@ -1,5 +1,6 @@
 package com.malik.CelioShop.CelioShop.entity;
 
+import com.malik.CelioShop.CelioShop.entity.review.Review;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,11 +51,29 @@ public class Product {
     @UpdateTimestamp
     private LocalDateTime updateDate;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL},
-            optional = true)
+    @Column(name = "rate_count")
+    private Integer rateCount;
+
+    @Column(name = "average_rate")
+    private Float avgRate;
+
+
+    @ManyToOne(fetch = FetchType.LAZY,
+                cascade = {CascadeType.PERSIST,
+                        CascadeType.MERGE,
+                        CascadeType.REFRESH}
+            ,optional = true)
     @JoinColumn(name = "Category_id")
     private ProductCategory productCategory;
 
+
+    @OneToMany(mappedBy = "product",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Set<Review> reviewSet;
+
+    @OneToMany(mappedBy = "productId", cascade = CascadeType.ALL)
+    private Set<ProductMedia> productMedia;
 
     @Override
     public boolean equals(Object o) {

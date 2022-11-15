@@ -14,7 +14,7 @@ import java.util.Set;
 @Getter
 @Builder
 @Entity
-@Table(name = "Product_Category")
+@Table(name = "category")
 public class ProductCategory {
 
     @Id
@@ -29,7 +29,11 @@ public class ProductCategory {
     private String description;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "productCategory"
+            ,cascade = {
+                        CascadeType.PERSIST,
+                        CascadeType.MERGE,
+                        CascadeType.REFRESH})
     private Set<Product> productSet;
 
     public void addProduct(Product product){
