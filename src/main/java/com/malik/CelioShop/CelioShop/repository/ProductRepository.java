@@ -1,7 +1,7 @@
 package com.malik.CelioShop.CelioShop.repository;
 
-import com.malik.CelioShop.CelioShop.entity.Product;
-import com.malik.CelioShop.CelioShop.entity.ProductCategory;
+import com.malik.CelioShop.CelioShop.entity.product.Product;
+import com.malik.CelioShop.CelioShop.entity.product.ProductCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -47,6 +47,8 @@ public class ReviewController {
         return ResponseEntity.ok("Review has been deleted");
     }
 
+
+
     @PutMapping("review/{reviewId}")
     public ResponseEntity<ReviewDto> updateReview(@RequestBody ReviewDto reviewDto,
                                                   @PathVariable Long reviewId){
@@ -54,5 +56,12 @@ public class ReviewController {
         return new ResponseEntity<>(reviewService.updateReview(reviewDto,reviewId), HttpStatus.OK);
     }
 
+
+    @PostMapping("review/{reviewId}/voteUp")
+    public ResponseEntity<String> upVote(){
+
+
+        return new ResponseEntity<String>("the comment has been upvoted", HttpStatus.OK);
+    }
 
 }

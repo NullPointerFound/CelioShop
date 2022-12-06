@@ -1,9 +1,9 @@
-package com.malik.CelioShop.CelioShop.entity;
+package com.malik.CelioShop.CelioShop.entity.product;
 
+import com.malik.CelioShop.CelioShop.entity.product.Product;
 import lombok.*;
 
 import javax.persistence.*;
-import java.nio.file.Path;
 
 @NoArgsConstructor
 @AllArgsConstructor

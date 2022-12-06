@@ -1,8 +1,8 @@
 package com.malik.CelioShop.CelioShop.service;
 
 import com.malik.CelioShop.CelioShop.Utils.Mapper;
-import com.malik.CelioShop.CelioShop.entity.Product;
-import com.malik.CelioShop.CelioShop.entity.ProductCategory;
+import com.malik.CelioShop.CelioShop.entity.product.Product;
+import com.malik.CelioShop.CelioShop.entity.product.ProductCategory;
 import com.malik.CelioShop.CelioShop.playload.ProductDto;
 import com.malik.CelioShop.CelioShop.repository.ProductCategoryRepository;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;

@@ -1,8 +1,7 @@
 package com.malik.CelioShop.CelioShop.service.Impl;
 
-import com.malik.CelioShop.CelioShop.Utils.Mapper;
-import com.malik.CelioShop.CelioShop.entity.Product;
-import com.malik.CelioShop.CelioShop.entity.ProductCategory;
+import com.malik.CelioShop.CelioShop.entity.product.Product;
+import com.malik.CelioShop.CelioShop.entity.product.ProductCategory;
 import com.malik.CelioShop.CelioShop.exception.ResourceAlreadyExist;
 import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
 import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;

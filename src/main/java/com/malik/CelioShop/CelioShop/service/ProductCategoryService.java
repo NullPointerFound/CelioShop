@@ -1,10 +1,6 @@
 package com.malik.CelioShop.CelioShop.service;
 
-import com.malik.CelioShop.CelioShop.entity.Product;
-import com.malik.CelioShop.CelioShop.entity.ProductCategory;
 import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

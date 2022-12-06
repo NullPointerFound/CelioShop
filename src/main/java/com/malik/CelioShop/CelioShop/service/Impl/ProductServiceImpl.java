@@ -1,23 +1,25 @@
 package com.malik.CelioShop.CelioShop.service.Impl;
 
-import com.malik.CelioShop.CelioShop.Utils.Mapper;
-import com.malik.CelioShop.CelioShop.entity.Product;
-import com.malik.CelioShop.CelioShop.entity.ProductCategory;
-import com.malik.CelioShop.CelioShop.entity.ProductMedia;
+import com.malik.CelioShop.CelioShop.entity.product.Product;
+import com.malik.CelioShop.CelioShop.entity.product.ProductCategory;
+import com.malik.CelioShop.CelioShop.entity.product.ProductMedia;
+import com.malik.CelioShop.CelioShop.entity.user.User;
 import com.malik.CelioShop.CelioShop.exception.ResourceAlreadyExist;
 import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
-import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;
 import com.malik.CelioShop.CelioShop.playload.ProductDto;
 import com.malik.CelioShop.CelioShop.repository.ProductCategoryRepository;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
+import com.malik.CelioShop.CelioShop.repository.UserRepository;
 import com.malik.CelioShop.CelioShop.service.ProductService;
+import com.malik.CelioShop.CelioShop.service.ServiceHelper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,9 +36,13 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
     private ProductCategoryRepository productCategoryRepository;
     private ModelMapper modelMapper;
+    private ServiceHelper serviceHelper;
 
     @Override
     public ProductDto createProduct(ProductDto productDto, String categoryName, MultipartFile media) throws IOException {
+
+        // find the authenticated user
+        User user = serviceHelper.getAuthenticatedUser();
 
         // Convert from DTO to Entity
         Product newProduct = modelMapper.map(productDto,Product.class);
@@ -63,11 +69,12 @@ public class ProductServiceImpl implements ProductService {
             throw new ResourceAlreadyExist("Product","SKU",newProduct.getSku());
         }
 
+        if(media != null){
+            Set<ProductMedia> medias = uploadMedia(media,newProduct);
+            newProduct.setProductMedia(medias);
+        }
 
-        Set<ProductMedia> medias = uploadMedia(media,newProduct);
-
-
-        newProduct.setProductMedia(medias);
+        newProduct.setUser(user);
 
         // Save the new product to DB
         Product savedProduct = productRepository.save(newProduct);
@@ -75,6 +82,7 @@ public class ProductServiceImpl implements ProductService {
         // Return the entity after we convert to DTO
         return modelMapper.map(savedProduct,ProductDto.class);
     }
+
 
     public Set<ProductMedia> uploadMedia(MultipartFile multipartFiles, Product product) throws IOException {
 
@@ -93,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
 
         productMediaSet.add(productMedia);
 
-//           file.transferTo(path);
+//      file.transferTo(path);
         Files.write(path, bytes);
 
         return productMediaSet;

@@ -1,6 +1,7 @@
 package com.malik.CelioShop.CelioShop.entity.review;
 
-import com.malik.CelioShop.CelioShop.entity.Product;
+import com.malik.CelioShop.CelioShop.entity.product.Product;
+import com.malik.CelioShop.CelioShop.entity.user.User;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -24,7 +25,7 @@ public class Review {
     @Column(name = "comment")
     private String comment;
 
-    @Column(name = "vote")
+    @Column(name = "votes")
     private Integer vote;
 
     @CreationTimestamp
@@ -41,4 +42,9 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Product_id")
     private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }

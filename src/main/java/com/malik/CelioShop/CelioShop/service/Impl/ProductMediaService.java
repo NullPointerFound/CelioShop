@@ -1,7 +1,6 @@
 package com.malik.CelioShop.CelioShop.service.Impl;
 
-import com.malik.CelioShop.CelioShop.entity.Product;
-import com.malik.CelioShop.CelioShop.entity.ProductMedia;
+import com.malik.CelioShop.CelioShop.entity.product.ProductMedia;
 import com.malik.CelioShop.CelioShop.repository.ProductMediaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,9 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service

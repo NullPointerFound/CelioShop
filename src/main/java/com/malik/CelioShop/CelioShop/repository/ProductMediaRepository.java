@@ -1,6 +1,6 @@
 package com.malik.CelioShop.CelioShop.repository;
 
-import com.malik.CelioShop.CelioShop.entity.ProductMedia;
+import com.malik.CelioShop.CelioShop.entity.product.ProductMedia;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,6 +1,7 @@
-package com.malik.CelioShop.CelioShop.entity;
+package com.malik.CelioShop.CelioShop.entity.product;
 
 import com.malik.CelioShop.CelioShop.entity.review.Review;
+import com.malik.CelioShop.CelioShop.entity.user.User;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -57,6 +58,9 @@ public class Product {
     @Column(name = "average_rate")
     private Float avgRate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY,
                 cascade = {CascadeType.PERSIST,

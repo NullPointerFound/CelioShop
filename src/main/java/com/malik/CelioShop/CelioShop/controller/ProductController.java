@@ -1,9 +1,5 @@
 package com.malik.CelioShop.CelioShop.controller;
 
-import com.malik.CelioShop.CelioShop.entity.Product;
-import com.malik.CelioShop.CelioShop.entity.ProductCategory;
-import com.malik.CelioShop.CelioShop.entity.ProductMedia;
-import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;
 import com.malik.CelioShop.CelioShop.playload.ProductDto;
 import com.malik.CelioShop.CelioShop.service.ProductCategoryService;
 import com.malik.CelioShop.CelioShop.service.ProductService;
@@ -15,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -23,38 +18,28 @@ import java.util.Set;
 public class ProductController {
 
     private ProductService productService;
-    private ProductCategoryService productCategoryService;
 
     @PostMapping("/product")
-    public ResponseEntity<ProductDto> createProductWithMedia(@RequestPart ProductDto productDto,
+    public ResponseEntity<ProductDto> createProductWithMedia(@RequestBody ProductDto productDto,
                                                              @RequestParam(name = "categoryName", required = false) String categoryName,
-                                                             @RequestPart("imageFile") MultipartFile media) throws IOException {
+                                                             @RequestPart(value = "imageFile", required = false) MultipartFile media) throws IOException {
 
-        return new ResponseEntity<>(productService.createProduct(productDto,categoryName,media), HttpStatus.CREATED);
+        return new ResponseEntity<>(productService.createProduct(productDto,categoryName,null), HttpStatus.CREATED);
     }
 
-
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadMedia(@RequestPart ProductDto productDto,
-            @RequestPart("imageFile") MultipartFile media) throws IOException {
-
-        System.out.println(media.getOriginalFilename());
-        System.out.println(media.getName());
-        System.out.println(media.getContentType());
-        System.out.println("**************");
-        System.out.println("Malik: "+productDto.getName());
-
-        return new ResponseEntity<String>("File uploaded successfully",HttpStatus.OK);
-    }
-
-
-
-//    @PostMapping("/product")
-//    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto,
-//                                                    @RequestParam(name = "categoryName", required = false) String categoryName){
+//    @PostMapping("/upload")
+//    public ResponseEntity<String> uploadMedia(@RequestPart ProductDto productDto,
+//            @RequestPart("imageFile") MultipartFile media) throws IOException {
 //
-//        return new ResponseEntity<>(productService.createProduct(productDto,categoryName), HttpStatus.CREATED);
+//        System.out.println(media.getOriginalFilename());
+//        System.out.println(media.getName());
+//        System.out.println(media.getContentType());
+//        System.out.println("**************");
+//        System.out.println("Malik: "+productDto.getName());
+//
+//        return new ResponseEntity<String>("File uploaded successfully",HttpStatus.OK);
 //    }
+
 
     @GetMapping("/product/{productId}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId){
@@ -64,6 +49,7 @@ public class ProductController {
     @GetMapping("/product")
     public ResponseEntity<List<ProductDto>> getProducts(){
 
+        System.out.println("Get product");
         return new ResponseEntity<>(productService.getAllProducts(),HttpStatus.OK);
     }
 

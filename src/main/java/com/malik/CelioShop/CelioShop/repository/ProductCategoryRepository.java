@@ -1,7 +1,6 @@
 package com.malik.CelioShop.CelioShop.repository;
 
-import com.malik.CelioShop.CelioShop.entity.ProductCategory;
-import jdk.jfr.Category;
+import com.malik.CelioShop.CelioShop.entity.product.ProductCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

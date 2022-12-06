@@ -1,14 +1,19 @@
 package com.malik.CelioShop.CelioShop.service.Impl;
 
-import com.malik.CelioShop.CelioShop.entity.Product;
+import com.malik.CelioShop.CelioShop.entity.product.Product;
 import com.malik.CelioShop.CelioShop.entity.review.Review;
+import com.malik.CelioShop.CelioShop.entity.user.User;
 import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
 import com.malik.CelioShop.CelioShop.playload.ReviewDto;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.repository.ReviewRepository;
+import com.malik.CelioShop.CelioShop.repository.UserRepository;
 import com.malik.CelioShop.CelioShop.service.ReviewService;
+import com.malik.CelioShop.CelioShop.service.ServiceHelper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,7 +27,7 @@ public class ReviewServiceImpl implements ReviewService {
     private ReviewRepository reviewRepository;
     private ProductRepository productRepository;
     private ModelMapper modelMapper;
-
+    private ServiceHelper serviceHelper;
 
     @Override
     public List<ReviewDto> getAllReviews() {
@@ -55,7 +60,14 @@ public class ReviewServiceImpl implements ReviewService {
         );
         Review newReview = modelMapper.map(reviewDto,Review.class);
         newReview.setProduct(foundProduct);
+
+        // find the authenticated user
+        User user = serviceHelper.getAuthenticatedUser();
+
+        newReview.setUser(user);
+
         Review savedReview = reviewRepository.save(newReview);
+
         productRepository.updateAvgRateAndRateCount(productId);
 
         return modelMapper.map(savedReview,ReviewDto.class);
