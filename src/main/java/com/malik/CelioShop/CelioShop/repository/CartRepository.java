@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CartRepository extends JpaRepository<Cart,Long> {
 
-    @Query("SELECT c from Cart c WHERE Product.id =?1 AND User.id=?2")
+    @Query("SELECT c from Cart c WHERE product.id = :productId AND user.id= :userId")
     Cart findByUserAndProduct(Long productId, Long userId);
 
     List<Cart> findByUser(User user);

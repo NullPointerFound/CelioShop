@@ -31,4 +31,9 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     @Modifying
     void updateAvgRateAndRateCount(Long productId);
 
+    @Query("UPDATE Product p SET "+
+            "p.quantity = :remainingQuantity "+
+            "WHERE p.id = :productId")
+    @Modifying
+    void updateProductQuantity(Long productId, int remainingQuantity);
 }

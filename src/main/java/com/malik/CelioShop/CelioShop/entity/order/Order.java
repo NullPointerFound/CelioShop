@@ -18,12 +18,14 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@Table(name = "orders")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "client_address")
     private String address;
 
     private String phoneNumber;
@@ -44,7 +46,6 @@ public class Order {
 
     @CreationTimestamp
     private LocalDateTime orderDate;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
