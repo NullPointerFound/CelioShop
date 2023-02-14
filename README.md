@@ -10,7 +10,7 @@ Lombok
 Mysql
 
 
-<h3>Feature already exist:</h3>
+<h3>Features already exist:</h3>
 
 Create/Read/Update/Delete a category and add a sub-category as well
 Create/Read/Update/Delete a product 
