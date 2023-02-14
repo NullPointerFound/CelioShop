@@ -19,6 +19,6 @@ Vote up or down for a review
 Create a new user / authentication
 
 
-<h3>ever I get time I'll add the following feature:</h3>
+<h3>Whenever I get chance I'll add the following feature:</h3>
 
 Documentations (swagger)
