@@ -39,14 +39,13 @@ public class ProductServiceImpl implements ProductService {
     private ServiceHelper serviceHelper;
 
     @Override
-    public ProductDto createProduct(ProductDto productDto, String categoryName, MultipartFile media) throws IOException {
+    public ProductDto createProduct(ProductDto productDto, String categoryName) {
 
         // find the authenticated user
         User user = serviceHelper.getAuthenticatedUser();
 
         // Convert from DTO to Entity
         Product newProduct = modelMapper.map(productDto,Product.class);
-
 
         // Check if the category exist
         if (categoryName != null) {
@@ -69,11 +68,6 @@ public class ProductServiceImpl implements ProductService {
             throw new ResourceAlreadyExist("Product","SKU",newProduct.getSku());
         }
 
-        if(media != null){
-            Set<ProductMedia> medias = uploadMedia(media,newProduct);
-            newProduct.setProductMedia(medias);
-        }
-
         newProduct.setUser(user);
 
         // Save the new product to DB
@@ -82,56 +76,6 @@ public class ProductServiceImpl implements ProductService {
         // Return the entity after we convert to DTO
         return modelMapper.map(savedProduct,ProductDto.class);
     }
-
-
-    public Set<ProductMedia> uploadMedia(MultipartFile multipartFiles, Product product) throws IOException {
-
-        Set<ProductMedia> productMediaSet = new HashSet<>();
-
-        String FOLDER_PATH = "/upload_dir/";
-        byte[] bytes = multipartFiles.getBytes();
-
-        Path path = Paths.get(FOLDER_PATH, multipartFiles.getOriginalFilename());
-
-        ProductMedia productMedia = new ProductMedia();
-        productMedia.setName(multipartFiles.getOriginalFilename());
-        productMedia.setType(multipartFiles.getContentType());
-        productMedia.setFilePath(String.valueOf(path));
-        productMedia.setProductId(product);
-
-        productMediaSet.add(productMedia);
-
-//      file.transferTo(path);
-        Files.write(path, bytes);
-
-        return productMediaSet;
-    }
-
-    public Set<ProductMedia> uploadMedia(MultipartFile[] multipartFiles) throws IOException {
-        Set<ProductMedia> productMediaSet = new HashSet<>();
-
-        String FOLDER_PATH = "/upload_dir/";
-
-        for ( MultipartFile file : multipartFiles  ){
-
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(FOLDER_PATH, file.getOriginalFilename());
-
-            ProductMedia productMedia = new ProductMedia(
-                    file.getOriginalFilename(), file.getContentType(), String.valueOf(path)
-            );
-            productMediaSet.add(productMedia);
-//            file.transferTo(path);
-            Files.write(path, bytes);
-        }
-
-        return productMediaSet;
-    }
-
-
-
-
-
 
     @Override
     public ProductDto getProductById(Long productId) {

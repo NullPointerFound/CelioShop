@@ -21,25 +21,10 @@ public class ProductController {
 
     @PostMapping("/product")
     public ResponseEntity<ProductDto> createProductWithMedia(@RequestBody ProductDto productDto,
-                                                             @RequestParam(name = "categoryName", required = false) String categoryName,
-                                                             @RequestPart(value = "imageFile", required = false) MultipartFile media) throws IOException {
+                                                             @RequestParam(name = "categoryName", required = false) String categoryName) throws IOException {
 
-        return new ResponseEntity<>(productService.createProduct(productDto,categoryName,null), HttpStatus.CREATED);
+        return new ResponseEntity<>(productService.createProduct(productDto,categoryName), HttpStatus.CREATED);
     }
-
-//    @PostMapping("/upload")
-//    public ResponseEntity<String> uploadMedia(@RequestPart ProductDto productDto,
-//            @RequestPart("imageFile") MultipartFile media) throws IOException {
-//
-//        System.out.println(media.getOriginalFilename());
-//        System.out.println(media.getName());
-//        System.out.println(media.getContentType());
-//        System.out.println("**************");
-//        System.out.println("Malik: "+productDto.getName());
-//
-//        return new ResponseEntity<String>("File uploaded successfully",HttpStatus.OK);
-//    }
-
 
     @GetMapping("/product/{productId}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId){

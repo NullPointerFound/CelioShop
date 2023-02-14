@@ -8,7 +8,7 @@ import java.util.List;
 
 
 public interface ProductService {
-    ProductDto createProduct(ProductDto productDto, String categoryName, MultipartFile media) throws IOException;
+    ProductDto createProduct(ProductDto productDto, String categoryName);
 
     ProductDto getProductById(Long productId);
 

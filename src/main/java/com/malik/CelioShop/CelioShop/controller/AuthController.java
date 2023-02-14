@@ -1,19 +1,16 @@
 package com.malik.CelioShop.CelioShop.controller;
 
-import com.malik.CelioShop.CelioShop.entity.user.User;
 import com.malik.CelioShop.CelioShop.playload.JWTAuthResponse;
 import com.malik.CelioShop.CelioShop.playload.RegisterDto;
 import com.malik.CelioShop.CelioShop.playload.SignDto;
 import com.malik.CelioShop.CelioShop.security.JwtTokenProvider;
 import com.malik.CelioShop.CelioShop.service.Impl.RegisterServiceImpl;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
