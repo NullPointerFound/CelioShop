@@ -33,7 +33,7 @@ public class CartServiceImpl implements CartService {
                 ()-> new ResourceNotFound("product","ID",productId)
         );
 
-        Cart cart = cartRepository.findByUserAndProduct(productId, 125L);//authenticatedUser.getId());
+        Cart cart = cartRepository.findByUserAndProduct(productId, authenticatedUser.getId());//authenticatedUser.getId());
 
         if (cart != null){
             Integer updatedQuantity = cart.getQuantity() + quantity;
@@ -76,7 +76,7 @@ public class CartServiceImpl implements CartService {
     public void updateCartProduct(Long productId, Integer quantity) {
 
         User authenticatedUser = serviceHelper.getAuthenticatedUser();
-        Cart cart = cartRepository.findByUserAndProduct(productId, 125L);//authenticatedUser.getId());
+        Cart cart = cartRepository.findByUserAndProduct(productId, authenticatedUser.getId());//authenticatedUser.getId());
         if( cart == null ){
             throw new ResourceNotFound("Cart","Product",productId);
         }
@@ -87,7 +87,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public void deleteCartProduct(Long productId) {
         User authenticatedUser = serviceHelper.getAuthenticatedUser();
-        Cart cart = cartRepository.findByUserAndProduct(productId, 125L);//authenticatedUser.getId());
+        Cart cart = cartRepository.findByUserAndProduct(productId, authenticatedUser.getId());//authenticatedUser.getId());
         if( cart == null ){
             throw new ResourceNotFound("Cart","Product",productId);
         }

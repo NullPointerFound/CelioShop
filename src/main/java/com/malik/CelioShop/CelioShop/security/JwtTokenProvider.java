@@ -1,15 +1,12 @@
 package com.malik.CelioShop.CelioShop.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.malik.CelioShop.CelioShop.exception.CelioShopApiException;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Date;
 
 @Component
@@ -52,8 +49,14 @@ public class JwtTokenProvider {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
-        }catch (Exception e){
-            throw new RuntimeException("Exception "+e);
+        } catch (MalformedJwtException ex) {
+            throw new CelioShopApiException(HttpStatus.BAD_REQUEST, "Invalid JWT token");
+        } catch (ExpiredJwtException ex) {
+            throw new CelioShopApiException(HttpStatus.BAD_REQUEST, "Expired JWT token");
+        } catch (UnsupportedJwtException ex) {
+            throw new CelioShopApiException(HttpStatus.BAD_REQUEST, "Unsupported JWT token");
+        } catch (IllegalArgumentException ex) {
+            throw new CelioShopApiException(HttpStatus.BAD_REQUEST, "JWT claims string is empty.");
         }
         }
 

@@ -8,15 +8,10 @@ import com.malik.CelioShop.CelioShop.repository.RoleRepository;
 import com.malik.CelioShop.CelioShop.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -45,7 +40,6 @@ public class RegisterServiceImpl {
         newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         userRepository.save(newUser);
-
 
     }
 

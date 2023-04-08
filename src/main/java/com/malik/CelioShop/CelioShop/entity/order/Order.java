@@ -1,14 +1,13 @@
 package com.malik.CelioShop.CelioShop.entity.order;
 
-import com.malik.CelioShop.CelioShop.entity.product.Product;
 import com.malik.CelioShop.CelioShop.entity.user.User;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;

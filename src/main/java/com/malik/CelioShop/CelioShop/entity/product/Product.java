@@ -2,11 +2,12 @@ package com.malik.CelioShop.CelioShop.entity.product;
 
 import com.malik.CelioShop.CelioShop.entity.review.Review;
 import com.malik.CelioShop.CelioShop.entity.user.User;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;

@@ -7,16 +7,13 @@ import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
 import com.malik.CelioShop.CelioShop.playload.ReviewDto;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.repository.ReviewRepository;
-import com.malik.CelioShop.CelioShop.repository.UserRepository;
 import com.malik.CelioShop.CelioShop.service.ReviewService;
 import com.malik.CelioShop.CelioShop.service.ServiceHelper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 

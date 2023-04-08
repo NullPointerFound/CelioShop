@@ -1,9 +1,9 @@
 package com.malik.CelioShop.CelioShop.entity.product;
 
 import com.malik.CelioShop.CelioShop.entity.product.Product;
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 
 @NoArgsConstructor
 @AllArgsConstructor

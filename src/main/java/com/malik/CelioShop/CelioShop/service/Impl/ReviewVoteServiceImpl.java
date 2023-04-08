@@ -12,8 +12,8 @@ import com.malik.CelioShop.CelioShop.service.ReviewVoteService;
 import com.malik.CelioShop.CelioShop.service.ServiceHelper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -69,7 +69,7 @@ public class ReviewVoteServiceImpl implements ReviewVoteService {
 
         }
         reviewRepository.updateReviewVoteCount(reviewId);
-        Integer voteCount = reviewRepository.getVoteCount(reviewId);
+        Integer voteCount = (Integer) reviewRepository.getVoteCount(reviewId);
         return VoteResult.success("The vote has submitted successfully",voteCount);
     }
 

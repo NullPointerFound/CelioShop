@@ -2,12 +2,13 @@ package com.malik.CelioShop.CelioShop.entity;
 
 import com.malik.CelioShop.CelioShop.entity.product.Product;
 import com.malik.CelioShop.CelioShop.entity.user.User;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+
 import java.math.BigDecimal;
 
 @AllArgsConstructor

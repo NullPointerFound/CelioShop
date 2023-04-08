@@ -1,9 +1,9 @@
 package com.malik.CelioShop.CelioShop.entity.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,7 +15,6 @@ import java.util.Set;
 @Entity
 @Table(name = "category")
 public class ProductCategory {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")

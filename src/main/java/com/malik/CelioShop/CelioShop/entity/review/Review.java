@@ -2,15 +2,15 @@ package com.malik.CelioShop.CelioShop.entity.review;
 
 import com.malik.CelioShop.CelioShop.entity.product.Product;
 import com.malik.CelioShop.CelioShop.entity.user.User;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
-@Entity
+@Entity(name = "Review")
 @Table(name = "review")
 public class Review {
 
@@ -26,7 +26,7 @@ public class Review {
     private String comment;
 
     @Column(name = "votes")
-    private Integer vote;
+    private Long vote;
 
     @CreationTimestamp
     @Column(name = "create_date_time")

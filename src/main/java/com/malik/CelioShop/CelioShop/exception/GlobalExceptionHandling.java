@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 
 @ControllerAdvice
-public class GlobalExceptionHandling {
+public class GlobalExceptionHandling extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResourceNotFound.class)
     public ResponseEntity<ErrorDetails> handleResourceNotFound(ResourceNotFound exception, WebRequest webRequest){
@@ -30,5 +31,7 @@ public class GlobalExceptionHandling {
                 exception.getMessage(), webRequest.getDescription(true));
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
+
+
 
 }
