@@ -6,6 +6,7 @@ import com.malik.CelioShop.CelioShop.service.ReviewService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,11 +18,13 @@ public class ReviewController {
 
     private ReviewService reviewService;
 
-    @GetMapping("/review")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/reviews")
     public ResponseEntity<List<ReviewDto>> getAllReviews(){
         return new ResponseEntity<>(reviewService.getAllReviews(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/review/{reviewId}")
     public ResponseEntity<ReviewDto> getReviewById(@PathVariable Long reviewId){
 
@@ -46,8 +49,6 @@ public class ReviewController {
         reviewService.deleteReviewById(reviewId);
         return ResponseEntity.ok("Review has been deleted");
     }
-
-
 
     @PutMapping("review/{reviewId}")
     public ResponseEntity<ReviewDto> updateReview(@RequestBody ReviewDto reviewDto,

@@ -13,7 +13,6 @@ public class ReviewDto {
     private Integer rate;
     private Long productId;
     private Long userId;
-    private Integer votes;
     private LocalDateTime creationDate;
     private LocalDateTime updatedDate;
 

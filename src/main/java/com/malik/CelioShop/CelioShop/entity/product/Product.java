@@ -1,5 +1,6 @@
 package com.malik.CelioShop.CelioShop.entity.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.malik.CelioShop.CelioShop.entity.review.Review;
 import com.malik.CelioShop.CelioShop.entity.user.User;
 import jakarta.persistence.*;

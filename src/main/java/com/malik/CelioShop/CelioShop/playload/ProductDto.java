@@ -1,6 +1,10 @@
 package com.malik.CelioShop.CelioShop.playload;
 
+import com.malik.CelioShop.CelioShop.entity.product.ProductCategory;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,18 +15,28 @@ public class ProductDto {
 
 
     private Long id;
-    @NotNull
+
+    @NotEmpty
+    @Size(min = 4, max = 100)
     private String name;
-    @NotNull
+
+    @NotEmpty
     private String description;
-    @NotNull
+
+    @NotEmpty
     private String sku;
-    @NotNull
+
+    @Min(value=0, message= "price couldn't be negative or empty")
     private BigDecimal price;
-    @NotNull
+
+    @Min(value=0, message= "quantity couldn't be negative or empty")
     private Integer quantity;
+
     private String imgUrl;
-    private Long categoryId;
+
+    private ProductCategory category;
+
     private LocalDateTime creationDate;
+
     private LocalDateTime updateDate;
 }

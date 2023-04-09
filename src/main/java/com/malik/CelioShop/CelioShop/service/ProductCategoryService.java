@@ -13,7 +13,7 @@ public interface ProductCategoryService {
 
     void deleteCategoryById(Long categoryId);
 
-    void updateProductById(Long categoryId);
+    ProductCategoryDto updateProductById(Long categoryId, ProductCategoryDto productCategoryDto);
 
 
 

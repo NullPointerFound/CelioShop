@@ -1,5 +1,7 @@
 package com.malik.CelioShop.CelioShop.playload;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.Set;
@@ -8,7 +10,8 @@ import java.util.Set;
 public class ProductCategoryDto {
 
     private Long id;
+    @NotEmpty
+    @Size(min = 4,max = 20)
     private String name;
     private String description;
-    private Set<ProductDto> productSet;
 }

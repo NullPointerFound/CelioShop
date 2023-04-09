@@ -83,8 +83,20 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public void updateProductById(Long categoryId) {
+    public ProductCategoryDto updateProductById(Long categoryId, ProductCategoryDto productCategoryDto) {
+        // Check if the category exist in DB before delete it
+        ProductCategory category = productCategoryRepository.findById(categoryId).orElseThrow(
+                ()-> new ResourceNotFound("Category","ID",categoryId)
+        );
 
+        if ( productCategoryDto.getName() != null){
+            category.setName(productCategoryDto.getName());
+        }
+        if ( productCategoryDto.getDescription() != null){
+            category.setDescription(productCategoryDto.getDescription());
+        }
+
+        return modelMapper.map(productCategoryRepository.save(category),ProductCategoryDto.class) ;
     }
 
 }

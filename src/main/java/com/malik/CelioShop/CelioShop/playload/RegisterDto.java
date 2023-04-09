@@ -14,6 +14,7 @@ import lombok.Setter;
 public class RegisterDto {
 
     private Long id;
+
     @NotEmpty(message = "Name may not be empty")
     private String fullName;
 
@@ -26,5 +27,6 @@ public class RegisterDto {
     private String username;
 
     @NotEmpty(message = "Password may not be empty")
+    @Size(min = 4)
     private String password;
 }

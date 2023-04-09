@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
     private ServiceHelper serviceHelper;
 
     @Override
-    public ProductDto createProduct(ProductDto productDto, String categoryName) {
+    public ProductDto createProduct(ProductDto productDto) {
 
         // find the authenticated user
         User user = serviceHelper.getAuthenticatedUser();
@@ -48,12 +48,12 @@ public class ProductServiceImpl implements ProductService {
         Product newProduct = modelMapper.map(productDto,Product.class);
 
         // Check if the category exist
-        if (categoryName != null) {
+        if (productDto.getCategory() != null) {
 
             ProductCategory category = productCategoryRepository
-                    .findByName(categoryName)
+                    .findById(productDto.getCategory().getId())
                     .orElseThrow(
-                            () -> new ResourceNotFound("Category","name",categoryName)
+                            () -> new ResourceNotFound("Category","id",productDto.getCategory().getId())
                     );
 
             // If the category exist we set the product to that category
@@ -113,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProductById(Long productId) {
+    public void updateProductById(Long productId, ProductDto productDto) {
 
     }
 

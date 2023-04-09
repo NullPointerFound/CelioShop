@@ -4,8 +4,11 @@ import com.malik.CelioShop.CelioShop.playload.JWTAuthResponse;
 import com.malik.CelioShop.CelioShop.playload.RegisterDto;
 import com.malik.CelioShop.CelioShop.playload.SignDto;
 import com.malik.CelioShop.CelioShop.security.JwtTokenProvider;
-import com.malik.CelioShop.CelioShop.service.Impl.RegisterServiceImpl;
+import com.malik.CelioShop.CelioShop.service.AuthService;
+import com.malik.CelioShop.CelioShop.service.Impl.AuthServiceImpl;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,32 +19,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-    private RegisterServiceImpl registerService;
-    private AuthenticationManager authenticationManager;
+    private AuthServiceImpl registerService;
 
-    private JwtTokenProvider jwtTokenProvider;
+
+    private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegisterDto user){
+    public ResponseEntity<String> registerUser( @RequestBody @Valid RegisterDto user){
+
         registerService.registerUser(user);
+
+        log.info(String.format("registerUser new user"));
+
         return ResponseEntity.ok("User registered successfully");
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<JWTAuthResponse> signIn(@RequestBody SignDto signDto){
+    public ResponseEntity<JWTAuthResponse> signIn(@RequestBody @Valid SignDto signDto){
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signDto.getUsernameOrEmail(),
-                signDto.getPassword()));
+        String token = authService.login(signDto);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // Get token from tokeProvider
-        String token = jwtTokenProvider.generateToken(authentication);
+        log.info(String.format("signIn a user signIn"));
 
         return ResponseEntity.ok(new JWTAuthResponse(token));
 

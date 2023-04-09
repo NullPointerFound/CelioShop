@@ -2,6 +2,7 @@ package com.malik.CelioShop.CelioShop.controller;
 
 import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;
 import com.malik.CelioShop.CelioShop.service.ProductCategoryService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class productCategoryController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<ProductCategoryDto> createCategory(@RequestBody ProductCategoryDto productCategoryDto){
+    public ResponseEntity<ProductCategoryDto> createCategory(@Valid @RequestBody ProductCategoryDto productCategoryDto){
 
         return new ResponseEntity<>(productCategoryService.createCategory(productCategoryDto), HttpStatus.CREATED);
     }
@@ -45,9 +46,8 @@ public class productCategoryController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{categoryId}")
-    public ResponseEntity<String> updateCategoryById(@PathVariable(value = "categoryId") Long categoryId, @RequestBody ProductCategoryDto productCategoryDto){
+    public ResponseEntity<ProductCategoryDto> updateCategoryById(@PathVariable(value = "categoryId") Long categoryId, @RequestBody ProductCategoryDto productCategoryDto){
 
-        productCategoryService.updateProductById(categoryId);
-        return ResponseEntity.ok("Category with ID : %s has been updated successfully");
+        return new ResponseEntity<>(productCategoryService.updateProductById(categoryId,productCategoryDto),HttpStatus.OK);
     }
 }

@@ -6,15 +6,10 @@ public class CelioShopApiException extends RuntimeException {
     private HttpStatus status;
     private String message;
 
-    public CelioShopApiException(HttpStatus status, String message) {
-        this.status = status;
+    public CelioShopApiException(String message,HttpStatus status) {
+        super(String.format("%s",message));
         this.message = message;
-    }
-
-    public CelioShopApiException(String message, HttpStatus status, String message1) {
-        super(message);
         this.status = status;
-        this.message = message1;
     }
 
     public HttpStatus getStatus() {

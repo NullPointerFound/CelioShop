@@ -1,4 +1,4 @@
-package com.malik.CelioShop.CelioShop.service;
+package com.malik.CelioShop.CelioShop.security;
 
 import com.malik.CelioShop.CelioShop.entity.user.Role;
 import com.malik.CelioShop.CelioShop.entity.user.User;
