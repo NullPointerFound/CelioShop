@@ -1,9 +1,9 @@
 package com.malik.CelioShop.CelioShop.service;
 
-import com.malik.CelioShop.CelioShop.Utils.Mapper;
 import com.malik.CelioShop.CelioShop.entity.product.Product;
 import com.malik.CelioShop.CelioShop.entity.product.ProductCategory;
 import com.malik.CelioShop.CelioShop.playload.ProductDto;
+import com.malik.CelioShop.CelioShop.playload.ProductDtoResponse;
 import com.malik.CelioShop.CelioShop.repository.ProductCategoryRepository;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.service.Impl.ProductServiceImpl;
@@ -79,7 +79,7 @@ class ProductServiceTest {
         BDDMockito.given(productRepository.save(newProduct)).willReturn(newProduct);
 
         // when - action or the behaviour that we are going test
-        ProductDto newProductDto = Mapper.mapToProductDto(newProduct);
+//        ProductDto newProductDto = Mapper.mapToProductDto(newProduct);
 
         //ProductDto savedProductDto = productService.createProduct(newProductDto);
 
@@ -98,7 +98,7 @@ class ProductServiceTest {
 
 
         // When - action or the behaviour that we are going test
-        ProductDto returnedProductDto = productService.getProductById(newProduct.getId());
+        ProductDtoResponse returnedProductDto = productService.getProductById(newProduct.getId());
 
 
         // Then -  verify the output

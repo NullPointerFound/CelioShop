@@ -1,5 +1,6 @@
 package com.malik.CelioShop.CelioShop.entity.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.malik.CelioShop.CelioShop.entity.review.Review;
 import com.malik.CelioShop.CelioShop.entity.user.User;
@@ -60,10 +61,12 @@ public class Product {
     @Column(name = "average_rate")
     private Float avgRate;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY,
                 cascade = {CascadeType.PERSIST,
                         CascadeType.MERGE,
@@ -73,6 +76,7 @@ public class Product {
     private ProductCategory productCategory;
 
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product",
             cascade = CascadeType.ALL,
             orphanRemoval = true)

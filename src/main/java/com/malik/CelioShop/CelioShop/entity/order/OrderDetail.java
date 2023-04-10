@@ -1,5 +1,6 @@
 package com.malik.CelioShop.CelioShop.entity.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.malik.CelioShop.CelioShop.entity.product.Product;
 import com.malik.CelioShop.CelioShop.entity.user.User;
 import jakarta.persistence.*;
@@ -29,9 +30,11 @@ public class OrderDetail {
 
     private BigDecimal shippingCost;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
 
     @ManyToOne
     @JoinColumn(name = "product_id")

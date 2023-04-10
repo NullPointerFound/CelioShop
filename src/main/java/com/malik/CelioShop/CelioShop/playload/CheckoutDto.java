@@ -13,5 +13,4 @@ public class CheckoutDto {
     private String phoneNumber;
 
     private PaymentMethod paymentMethod;
-
 }

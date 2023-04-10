@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/cart")
 public class CartController {
-
     private CartService cartService;
 
     @PostMapping("{productId}/{quantity}")
-    public ResponseEntity<String> addProductToCart(Long productId,Integer quantity){
+    public ResponseEntity<String> addProductToCart(@PathVariable Long productId, @PathVariable Integer quantity){
         cartService.addProductToCart(productId,quantity);
         return new ResponseEntity<>("Product has been added to you cart successfully", HttpStatus.CREATED);
     }
@@ -27,7 +26,8 @@ public class CartController {
     }
 
     @PutMapping("{productId}/{quantity}")
-    public ResponseEntity<String> updateCart(Long productId,Integer quantity){
+    public ResponseEntity<String> updateCart(@PathVariable Long productId,@PathVariable Integer quantity){
+
         if(quantity>=1){
             cartService.updateCartProduct(productId,quantity);
         }

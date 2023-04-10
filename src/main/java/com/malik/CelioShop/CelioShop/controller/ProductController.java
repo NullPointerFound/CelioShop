@@ -1,6 +1,7 @@
 package com.malik.CelioShop.CelioShop.controller;
 
 import com.malik.CelioShop.CelioShop.playload.ProductDto;
+import com.malik.CelioShop.CelioShop.playload.ProductDtoResponse;
 import com.malik.CelioShop.CelioShop.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,18 +22,19 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/product")
-    public ResponseEntity<ProductDto> createProductWithMedia(@Valid @RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductDtoResponse> createProduct(@Valid @RequestBody ProductDto productDto,
+                                                                     @RequestParam(name = "categoryName", required = false) String categoryName) {
 
-        return new ResponseEntity<>(productService.createProduct(productDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(productService.createProduct(productDto,categoryName), HttpStatus.CREATED);
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId){
+    public ResponseEntity<ProductDtoResponse> getProductById(@PathVariable Long productId){
         return new ResponseEntity<>(productService.getProductById(productId), HttpStatus.OK);
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductDto>> getProducts(){
+    public ResponseEntity<List<ProductDtoResponse>> getProducts(){
 
         return new ResponseEntity<>(productService.getAllProducts(),HttpStatus.OK);
     }
@@ -46,20 +48,19 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/product/{productId}")
-    public ResponseEntity<String> updateProductById(@PathVariable Long productId,@Valid @RequestBody ProductDto updatedProductDto){
+    public ResponseEntity<ProductDtoResponse> updateProductById(@PathVariable Long productId, @RequestBody ProductDto updatedProductDto){
 
-        productService.updateProductById(productId, updatedProductDto);
-        return ResponseEntity.ok("Product with ID : %s has been updated successfully");
+        return new ResponseEntity<>(productService.updateProductById(productId, updatedProductDto), HttpStatus.OK);
     }
 
-    @GetMapping("/category/{categoryId}/product")
-    public ResponseEntity<List<ProductDto>> getProductsByCategoryId(@PathVariable(value = "categoryId") Long categoryId){
+    @GetMapping("/product/category/{categoryId}")
+    public ResponseEntity<List<ProductDtoResponse>> getProductsByCategoryId(@PathVariable(value = "categoryId") Long categoryId){
 
         return new ResponseEntity<>(productService.getProductsByCategoryId(categoryId),HttpStatus.OK);
     }
 
     @GetMapping("/product/search")
-    public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam(name = "keyword", required = true) String query){
+    public ResponseEntity<List<ProductDtoResponse>> searchProducts(@RequestParam(name = "keyword", required = true) String query){
 
         return ResponseEntity.ok(productService.searchProduct(query));
     }

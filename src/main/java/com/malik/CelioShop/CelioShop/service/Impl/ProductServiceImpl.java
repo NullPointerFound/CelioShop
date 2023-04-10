@@ -7,12 +7,14 @@ import com.malik.CelioShop.CelioShop.entity.user.User;
 import com.malik.CelioShop.CelioShop.exception.ResourceAlreadyExist;
 import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
 import com.malik.CelioShop.CelioShop.playload.ProductDto;
+import com.malik.CelioShop.CelioShop.playload.ProductDtoResponse;
 import com.malik.CelioShop.CelioShop.repository.ProductCategoryRepository;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.repository.UserRepository;
 import com.malik.CelioShop.CelioShop.service.ProductService;
 import com.malik.CelioShop.CelioShop.service.ServiceHelper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,6 +32,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -39,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
     private ServiceHelper serviceHelper;
 
     @Override
-    public ProductDto createProduct(ProductDto productDto) {
+    public ProductDtoResponse createProduct(ProductDto productDto, String categoryName) {
 
         // find the authenticated user
         User user = serviceHelper.getAuthenticatedUser();
@@ -48,12 +52,12 @@ public class ProductServiceImpl implements ProductService {
         Product newProduct = modelMapper.map(productDto,Product.class);
 
         // Check if the category exist
-        if (productDto.getCategory() != null) {
+        if (categoryName != null) {
 
             ProductCategory category = productCategoryRepository
-                    .findById(productDto.getCategory().getId())
+                    .findByName(categoryName)
                     .orElseThrow(
-                            () -> new ResourceNotFound("Category","id",productDto.getCategory().getId())
+                            () -> new ResourceNotFound("Category","name",categoryName)
                     );
 
             // If the category exist we set the product to that category
@@ -61,12 +65,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
 
-        //  Check if there is a product in DB with the same SKU
-        Optional<Product> productExist = productRepository.findBySku(newProduct.getSku());
-
-        if ( productExist.isPresent()){
-            throw new ResourceAlreadyExist("Product","SKU",newProduct.getSku());
-        }
+        checkSkuExist(newProduct.getSku());
 
         newProduct.setUser(user);
 
@@ -74,28 +73,38 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = productRepository.save(newProduct);
 
         // Return the entity after we convert to DTO
-        return modelMapper.map(savedProduct,ProductDto.class);
+        return modelMapper.map(savedProduct, ProductDtoResponse.class);
+    }
+
+    private void checkSkuExist(String skuNumber) {
+        //  Check if there is a product in DB with the same SKU
+        Optional<Product> productExist = productRepository.findBySku(skuNumber);
+
+        if ( productExist.isPresent()){
+            throw new ResourceAlreadyExist("Product","SKU", skuNumber);
+        }
     }
 
     @Override
-    public ProductDto getProductById(Long productId) {
+    public ProductDtoResponse getProductById(Long productId) {
         // Retrieve the product by ID and if it doesn't exist we throw a Resource not found exception
         Product product = productRepository.findById(productId).orElseThrow(
                 ()-> new ResourceNotFound("Product","ID",productId)
         );
 
         // we return the product found after we convert it to DTO
-        return modelMapper.map(product,ProductDto.class);
+        return modelMapper.map(product,ProductDtoResponse.class);
     }
 
     @Override
-    public List<ProductDto> getAllProducts() {
+    public List<ProductDtoResponse> getAllProducts() {
 
         List<Product> products = productRepository.findAll();
 
+
         // Convert the entities found to DTOs
-        List<ProductDto> productDtoList = products.stream().map(
-                product -> modelMapper.map(product,ProductDto.class)
+        List<ProductDtoResponse> productDtoList = products.stream().map(
+                product -> modelMapper.map(product,ProductDtoResponse.class)
                 ).collect(Collectors.toList());
 
         return productDtoList;
@@ -113,12 +122,37 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProductById(Long productId, ProductDto productDto) {
+    public ProductDtoResponse updateProductById(Long productId, ProductDto productDto) {
 
+        Product product = productRepository.findById(productId).orElseThrow(
+                ()-> new ResourceNotFound("Product","ID",productId)
+        );
+
+        if (productDto.getName() != null){
+            product.setName(productDto.getName());
+        }
+
+        if (productDto.getDescription() != null){
+            product.setDescription(productDto.getDescription());
+        }
+
+        if (productDto.getSku() != null){
+            checkSkuExist(productDto.getSku());
+            product.setSku(productDto.getSku());
+        }
+
+        if (productDto.getPrice() != null){
+            product.setPrice(productDto.getPrice());
+        }
+
+        if (productDto.getQuantity() != null){
+            product.setQuantity(productDto.getQuantity());
+        }
+        return modelMapper.map(productRepository.save(product), ProductDtoResponse.class);
     }
 
     @Override
-    public List<ProductDto> getProductsByCategoryId(Long categoryId) {
+    public List<ProductDtoResponse> getProductsByCategoryId(Long categoryId) {
 
         ProductCategory productCategory = productCategoryRepository.findById(categoryId).orElseThrow(
                 ()->  new ResourceNotFound("Category","ID",categoryId)
@@ -126,19 +160,19 @@ public class ProductServiceImpl implements ProductService {
             List<Product> productList = productRepository.findByProductCategory(productCategory);
 
             return productList.stream().map(
-                        product -> modelMapper.map(product,ProductDto.class)
+                        product -> modelMapper.map(product,ProductDtoResponse.class)
                         ).collect(Collectors.toList());
 
         }
 
         @Override
-        public  List<ProductDto> searchProduct(String query){
+        public  List<ProductDtoResponse> searchProduct(String query){
 
-            System.out.println("Malik: "+query);
+
             List<Product> productsFound = productRepository.searchProduct(query);
-            System.out.println(productsFound);
-            List<ProductDto> productFoundDto = productsFound.stream().map(
-                product -> modelMapper.map(product,ProductDto.class)
+
+            List<ProductDtoResponse> productFoundDto = productsFound.stream().map(
+                product -> modelMapper.map(product,ProductDtoResponse.class)
                 ).collect(Collectors.toList());
 
         return productFoundDto;

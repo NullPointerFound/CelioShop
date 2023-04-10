@@ -1,5 +1,6 @@
 package com.malik.CelioShop.CelioShop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.malik.CelioShop.CelioShop.entity.product.Product;
 import com.malik.CelioShop.CelioShop.entity.user.User;
 import jakarta.persistence.*;
@@ -22,6 +23,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

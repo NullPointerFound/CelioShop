@@ -3,6 +3,7 @@ package com.malik.CelioShop.CelioShop.service.Impl;
 import com.malik.CelioShop.CelioShop.entity.product.Product;
 import com.malik.CelioShop.CelioShop.entity.review.Review;
 import com.malik.CelioShop.CelioShop.entity.user.User;
+import com.malik.CelioShop.CelioShop.exception.CelioShopApiException;
 import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
 import com.malik.CelioShop.CelioShop.playload.ReviewDto;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
@@ -11,9 +12,11 @@ import com.malik.CelioShop.CelioShop.service.ReviewService;
 import com.malik.CelioShop.CelioShop.service.ServiceHelper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,7 +97,48 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public void deleteMyReviewById(Long reviewId) {
+
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new ResourceNotFound("Review","ID",reviewId)
+        );
+
+        // find the authenticated user
+        User user = serviceHelper.getAuthenticatedUser();
+
+        if (!review.getUser().equals(user)){
+            throw new CelioShopApiException("you can't delete a comment that it's not yours", HttpStatus.UNAUTHORIZED);
+        }
+
+        reviewRepository.delete(review);
+    }
+
+    @Override
     public ReviewDto updateReview(ReviewDto reviewDto, Long reviewId) {
-        return null;
+
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new ResourceNotFound("Review","ID",reviewId)
+        );
+
+        // find the authenticated user
+        User user = serviceHelper.getAuthenticatedUser();
+
+        if (!review.getUser().equals(user)){
+            throw new CelioShopApiException("you can't update a comment that it's not yours", HttpStatus.UNAUTHORIZED);
+        }
+
+        if (review.getHeadline() != null){
+            review.setHeadline(review.getHeadline());
+        }
+
+        if (review.getComment() != null){
+            review.setComment(review.getComment());
+        }
+
+        if (review.getRate() != null){
+            review.setRate(review.getRate());
+        }
+
+        return modelMapper.map(reviewRepository.save(review),ReviewDto.class);
     }
 }

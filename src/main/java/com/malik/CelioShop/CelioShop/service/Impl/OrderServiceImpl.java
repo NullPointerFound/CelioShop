@@ -6,6 +6,7 @@ import com.malik.CelioShop.CelioShop.entity.order.OrderDetail;
 import com.malik.CelioShop.CelioShop.entity.order.OrderStatus;
 import com.malik.CelioShop.CelioShop.entity.order.PaymentMethod;
 import com.malik.CelioShop.CelioShop.entity.user.User;
+import com.malik.CelioShop.CelioShop.exception.CelioShopApiException;
 import com.malik.CelioShop.CelioShop.playload.CartItem;
 import com.malik.CelioShop.CelioShop.playload.CheckoutDto;
 import com.malik.CelioShop.CelioShop.repository.OrderDetailRepository;
@@ -15,6 +16,7 @@ import com.malik.CelioShop.CelioShop.service.CartService;
 import com.malik.CelioShop.CelioShop.service.OrderService;
 import com.malik.CelioShop.CelioShop.service.ServiceHelper;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,12 +43,20 @@ public class OrderServiceImpl implements OrderService {
 
         List<Cart> cartItems = cart.getItems();
 
+        cartItems.stream().forEach( (item) ->
+        {
+            if (item.getQuantity() > item.getProduct().getQuantity()) {
+                throw new CelioShopApiException("there is not enough quantity", HttpStatus.BAD_REQUEST);
+            }
+        });
+
         Order newOrder = new Order();
         newOrder.setAddress(checkoutDto.getAddress());
         newOrder.setPhoneNumber(checkoutDto.getPhoneNumber());
         newOrder.setOrderStatus(OrderStatus.PROCESSING);
         newOrder.setPaymentMethod(PaymentMethod.CASH_ON_DELIVERY);
         newOrder.setSubtotal(cart.getTotalPrice());
+        newOrder.setUser(user);
         orderRepository.save(newOrder);
 
         for ( Cart item : cartItems){
@@ -60,5 +70,15 @@ public class OrderServiceImpl implements OrderService {
             productRepository.updateProductQuantity(item.getProduct().getId(),remainingQuantity);
         }
 
+    }
+
+    @Override
+    public List<Order> getUserOrders() {
+
+        User authenticatedUser = serviceHelper.getAuthenticatedUser();
+
+        List<Order> orderList = orderRepository.findByUser(authenticatedUser);
+
+        return (orderList != null) ? orderList : List.of();
     }
 }
