@@ -3,6 +3,7 @@ package com.malik.CelioShop.CelioShop.controller;
 import com.malik.CelioShop.CelioShop.playload.ReviewDto;
 import com.malik.CelioShop.CelioShop.service.ProductService;
 import com.malik.CelioShop.CelioShop.service.ReviewService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ public class ReviewController {
 
     private ReviewService reviewService;
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/reviews")
     public ResponseEntity<List<ReviewDto>> getAllReviews(){
@@ -37,6 +41,9 @@ public class ReviewController {
         return new ResponseEntity<>(reviewService.getReviewsByProductId(productId), HttpStatus.OK);
     }
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PostMapping("product/{productId}/review")
     public ResponseEntity<ReviewDto> createReview(@Valid @RequestBody ReviewDto reviewDto,
                                                   @PathVariable Long productId){
@@ -44,6 +51,9 @@ public class ReviewController {
         return new ResponseEntity(reviewService.createReview(reviewDto,productId), HttpStatus.CREATED);
     }
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/review/delete/{reviewId}")
     public ResponseEntity<String> deleteReviewById(@PathVariable Long reviewId){
@@ -52,6 +62,9 @@ public class ReviewController {
         return ResponseEntity.ok("Review has been deleted");
     }
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @DeleteMapping("/review/{reviewId}")
     public ResponseEntity<String> deleteMyReviewById(@PathVariable Long reviewId){
 
@@ -60,12 +73,15 @@ public class ReviewController {
     }
 
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PutMapping("review/{reviewId}")
-    public ResponseEntity<ReviewDto> updateReview(@RequestBody ReviewDto reviewDto,
+    public ResponseEntity<ReviewDto> updateMyReview(@RequestBody ReviewDto reviewDto,
                                                   @PathVariable Long reviewId){
 
 
-        return new ResponseEntity<>(reviewService.updateReview(reviewDto,reviewId), HttpStatus.OK);
+        return new ResponseEntity<>(reviewService.updateMyReview(reviewDto,reviewId), HttpStatus.OK);
     }
 
 }

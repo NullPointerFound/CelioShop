@@ -6,6 +6,9 @@ import com.malik.CelioShop.CelioShop.playload.SignDto;
 import com.malik.CelioShop.CelioShop.security.JwtTokenProvider;
 import com.malik.CelioShop.CelioShop.service.AuthService;
 import com.malik.CelioShop.CelioShop.service.Impl.AuthServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/auth")
+@Tag(
+        name = "Authentication"
+)
 public class AuthController {
 
     private AuthServiceImpl registerService;
@@ -30,6 +36,14 @@ public class AuthController {
 
     private AuthService authService;
 
+    @Operation(
+            summary = "Register a new user Endpoint",
+            description = "Create a new user"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Http Status 201 Created"
+    )
     @PostMapping("/register")
     public ResponseEntity<String> registerUser( @RequestBody @Valid RegisterDto user){
 

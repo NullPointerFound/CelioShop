@@ -2,6 +2,7 @@ package com.malik.CelioShop.CelioShop.controller;
 
 import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;
 import com.malik.CelioShop.CelioShop.service.ProductCategoryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,9 @@ public class productCategoryController {
 
     private ProductCategoryService productCategoryService;
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<ProductCategoryDto> createCategory(@Valid @RequestBody ProductCategoryDto productCategoryDto){
@@ -37,6 +41,9 @@ public class productCategoryController {
         return new ResponseEntity<>(productCategoryService.getAllCategories(),HttpStatus.OK);
     }
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<String> deleteCategoryById(@PathVariable Long categoryId){
@@ -44,6 +51,9 @@ public class productCategoryController {
         return ResponseEntity.ok("The category has been deleted successfully");
     }
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{categoryId}")
     public ResponseEntity<ProductCategoryDto> updateCategoryById(@PathVariable(value = "categoryId") Long categoryId, @RequestBody ProductCategoryDto productCategoryDto){

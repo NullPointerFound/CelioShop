@@ -114,7 +114,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewDto updateReview(ReviewDto reviewDto, Long reviewId) {
+    public ReviewDto updateMyReview(ReviewDto reviewDto, Long reviewId) {
 
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new ResourceNotFound("Review","ID",reviewId)

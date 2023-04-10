@@ -13,7 +13,7 @@ public interface ReviewService {
 
     void deleteReviewById(Long reviewId);
 
-    ReviewDto updateReview(ReviewDto reviewDto, Long reviewId);
+    ReviewDto updateMyReview(ReviewDto reviewDto, Long reviewId);
 
     List<ReviewDto> getReviewsByProductId(Long productId);
 

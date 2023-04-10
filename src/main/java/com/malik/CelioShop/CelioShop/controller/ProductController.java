@@ -3,6 +3,7 @@ package com.malik.CelioShop.CelioShop.controller;
 import com.malik.CelioShop.CelioShop.playload.ProductDto;
 import com.malik.CelioShop.CelioShop.playload.ProductDtoResponse;
 import com.malik.CelioShop.CelioShop.service.ProductService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,9 @@ public class ProductController {
 
     private ProductService productService;
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/product")
     public ResponseEntity<ProductDtoResponse> createProduct(@Valid @RequestBody ProductDto productDto,
@@ -39,6 +43,9 @@ public class ProductController {
         return new ResponseEntity<>(productService.getAllProducts(),HttpStatus.OK);
     }
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/product/{productId}")
     public ResponseEntity<String> deleteProductById(@PathVariable Long productId){
@@ -46,6 +53,9 @@ public class ProductController {
         return ResponseEntity.ok(String.format("Product with ID : %s has been deleted successfully",productId));
     }
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/product/{productId}")
     public ResponseEntity<ProductDtoResponse> updateProductById(@PathVariable Long productId, @RequestBody ProductDto updatedProductDto){
