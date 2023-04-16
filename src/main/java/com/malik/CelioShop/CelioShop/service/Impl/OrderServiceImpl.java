@@ -69,6 +69,7 @@ public class OrderServiceImpl implements OrderService {
             int remainingQuantity = item.getProduct().getQuantity() - item.getQuantity();
             productRepository.updateProductQuantity(item.getProduct().getId(),remainingQuantity);
         }
+        cartService.deleteCartByUser(user);
 
     }
 

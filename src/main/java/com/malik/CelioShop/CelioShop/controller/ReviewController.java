@@ -1,6 +1,7 @@
 package com.malik.CelioShop.CelioShop.controller;
 
 import com.malik.CelioShop.CelioShop.playload.ReviewDto;
+import com.malik.CelioShop.CelioShop.playload.ReviewDtoResponse;
 import com.malik.CelioShop.CelioShop.service.ProductService;
 import com.malik.CelioShop.CelioShop.service.ReviewService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -25,19 +26,19 @@ public class ReviewController {
     )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/reviews")
-    public ResponseEntity<List<ReviewDto>> getAllReviews(){
+    public ResponseEntity<List<ReviewDtoResponse>> getAllReviews(){
         return new ResponseEntity<>(reviewService.getAllReviews(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/review/{reviewId}")
-    public ResponseEntity<ReviewDto> getReviewById(@PathVariable Long reviewId){
+    public ResponseEntity<ReviewDtoResponse> getReviewById(@PathVariable Long reviewId){
 
         return new ResponseEntity<>(reviewService.getReviewById(reviewId),HttpStatus.OK);
     }
 
     @GetMapping("/product/{productId}/reviews")
-    public ResponseEntity<List<ReviewDto>> getReviewsByProductId(@PathVariable Long productId){
+    public ResponseEntity<List<ReviewDtoResponse>> getReviewsByProductId(@PathVariable Long productId){
         return new ResponseEntity<>(reviewService.getReviewsByProductId(productId), HttpStatus.OK);
     }
 
@@ -45,7 +46,7 @@ public class ReviewController {
             name = "Bear Authentication"
     )
     @PostMapping("product/{productId}/review")
-    public ResponseEntity<ReviewDto> createReview(@Valid @RequestBody ReviewDto reviewDto,
+    public ResponseEntity<ReviewDtoResponse> createReview(@Valid @RequestBody ReviewDto reviewDto,
                                                   @PathVariable Long productId){
 
         return new ResponseEntity(reviewService.createReview(reviewDto,productId), HttpStatus.CREATED);
@@ -77,7 +78,7 @@ public class ReviewController {
             name = "Bear Authentication"
     )
     @PutMapping("review/{reviewId}")
-    public ResponseEntity<ReviewDto> updateMyReview(@RequestBody ReviewDto reviewDto,
+    public ResponseEntity<ReviewDtoResponse> updateMyReview(@RequestBody ReviewDto reviewDto,
                                                   @PathVariable Long reviewId){
 
 

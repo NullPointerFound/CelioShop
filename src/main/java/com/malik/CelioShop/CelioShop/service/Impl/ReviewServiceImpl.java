@@ -6,6 +6,7 @@ import com.malik.CelioShop.CelioShop.entity.user.User;
 import com.malik.CelioShop.CelioShop.exception.CelioShopApiException;
 import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
 import com.malik.CelioShop.CelioShop.playload.ReviewDto;
+import com.malik.CelioShop.CelioShop.playload.ReviewDtoResponse;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.repository.ReviewRepository;
 import com.malik.CelioShop.CelioShop.service.ReviewService;
@@ -30,30 +31,30 @@ public class ReviewServiceImpl implements ReviewService {
     private ServiceHelper serviceHelper;
 
     @Override
-    public List<ReviewDto> getAllReviews() {
+    public List<ReviewDtoResponse> getAllReviews() {
 
         List<Review> allReviews = reviewRepository.findAll();
 
-        List<ReviewDto> allReviewsDto = allReviews.stream().map(
-                review -> modelMapper.map(review,ReviewDto.class)
+        List<ReviewDtoResponse> allReviewsDto = allReviews.stream().map(
+                review -> modelMapper.map(review,ReviewDtoResponse.class)
         ).collect(Collectors.toList());
 
         return allReviewsDto;
     }
 
     @Override
-    public ReviewDto getReviewById(Long reviewId) {
+    public ReviewDtoResponse getReviewById(Long reviewId) {
 
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new ResourceNotFound("Review","ID",reviewId)
         );
 
-        return modelMapper.map(review,ReviewDto.class);
+        return modelMapper.map(review,ReviewDtoResponse.class);
     }
 
     @Override
     @Transactional
-    public ReviewDto createReview(ReviewDto reviewDto,Long productId) {
+    public ReviewDtoResponse createReview(ReviewDto reviewDto,Long productId) {
 
         Product foundProduct = productRepository.findById(productId).orElseThrow(
                 ()-> new ResourceNotFound("Product","ID",productId)
@@ -70,7 +71,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         productRepository.updateAvgRateAndRateCount(productId);
 
-        return modelMapper.map(savedReview,ReviewDto.class);
+        return modelMapper.map(savedReview,ReviewDtoResponse.class);
     }
 
     @Override
@@ -83,14 +84,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewDto> getReviewsByProductId(Long productId) {
+    public List<ReviewDtoResponse> getReviewsByProductId(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(
                 ()-> new ResourceNotFound("Product","ID",productId)
         );
 
         List<Review> reviews = reviewRepository.findByProduct(product);
-        List<ReviewDto> reviewDtoList = reviews.stream().map(
-                review -> modelMapper.map(review,ReviewDto.class)
+
+        List<ReviewDtoResponse> reviewDtoList = reviews.stream().map(
+                review -> modelMapper.map(review, ReviewDtoResponse.class)
         ).collect(Collectors.toList());
 
         return reviewDtoList;
@@ -114,7 +116,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewDto updateMyReview(ReviewDto reviewDto, Long reviewId) {
+    public ReviewDtoResponse updateMyReview(ReviewDto reviewDto, Long reviewId) {
 
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new ResourceNotFound("Review","ID",reviewId)
@@ -139,6 +141,6 @@ public class ReviewServiceImpl implements ReviewService {
             review.setRate(review.getRate());
         }
 
-        return modelMapper.map(reviewRepository.save(review),ReviewDto.class);
+        return modelMapper.map(reviewRepository.save(review),ReviewDtoResponse.class);
     }
 }

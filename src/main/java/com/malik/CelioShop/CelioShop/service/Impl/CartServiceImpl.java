@@ -14,6 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
@@ -109,5 +111,20 @@ public class CartServiceImpl implements CartService {
 
         cartRepository.delete(cart);
     }
+
+    @Transactional
+    @Override
+    public void deleteCartByUser(User user) {
+        List<Cart> cartItems = cartRepository.findByUser(user);
+        if( cartItems == null ){
+            throw new ResourceNotFound("Cart","user",user.getId());
+        }
+
+        for( Cart item: cartItems){
+            cartRepository.deleteById(item.getId());
+        }
+
+    }
+
 
 }
