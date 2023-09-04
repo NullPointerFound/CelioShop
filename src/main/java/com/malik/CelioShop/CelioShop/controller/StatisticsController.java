@@ -3,7 +3,7 @@ package com.malik.CelioShop.CelioShop.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class statisticsController {
+public class StatisticsController {
 
 
     // total number of articles;

@@ -13,12 +13,21 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+
+/*
+    This class for Order entity,
+    It has a many-to-one relationship with user entity,
+    and one-to-many relationship with OrderDetail entity,
+    Only authenticated user can create an order and see their previous order,
+    while the admin can see all the orders created, and mark them shipped.
+ */
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "orders")
+@Table(name = "order")
 public class Order {
 
     @Id

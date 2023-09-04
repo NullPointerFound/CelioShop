@@ -11,6 +11,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/*
+    This class for Page entity, it has no relationships,
+    only users with admin privileges can create/edit/delete new Pages such (About us, Privacy...etc),
+    while all the other users including the ones who aren't authenticated can view Pages.
+ */
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter

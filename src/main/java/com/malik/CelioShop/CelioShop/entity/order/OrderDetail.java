@@ -11,6 +11,12 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+
+/*
+    This class for Order details entity
+ */
+
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

@@ -9,6 +9,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+
+/*
+    This class for Review entity, it has a relationship of many-to-one with Product entity,
+    and relationship of many-to-one with User entity,
+    only authenticated user can add reviews, edit their reviews and delete their reviews,
+    while all the no unauthenticated user can see them,
+    and only users with admin privileges can edit, delete and update any review.
+ */
 @Data
 @Entity(name = "Review")
 @Table(name = "review")

@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/category")
-public class productCategoryController {
+public class ProductCategoryController {
 
     private ProductCategoryService productCategoryService;
 
