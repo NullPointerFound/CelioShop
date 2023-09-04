@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1")
+
 public class ProductController {
 
     private ProductService productService;
@@ -38,7 +39,7 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductDtoResponse>> getProducts(){
+    public ResponseEntity<List<ProductDtoResponse>> getAllProducts(){
 
         return new ResponseEntity<>(productService.getAllProducts(),HttpStatus.OK);
     }

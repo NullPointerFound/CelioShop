@@ -1,19 +1,26 @@
 import React from "react";
 import styled from "styled-components";
 
-function Categories({ categories, filterItems }) {
+function Categories({ categories, setSelectedCategory }) {
   return (
     <Wrapper>
       <div className="btn-container">
-        {categories.map((category, index) => {
+        <button
+          type="button"
+          className="filter-btn"
+          onClick={() => setSelectedCategory(null)}
+        >
+          All
+        </button>
+        {categories?.map((category, index) => {
           return (
             <button
               type="button"
               className="filter-btn"
-              key={index}
-              onClick={() => filterItems(category)}
+              key={category.id}
+              onClick={() => setSelectedCategory(category.id)}
             >
-              {category}
+              {category.name}
             </button>
           );
         })}
@@ -38,13 +45,13 @@ const Wrapper = styled.article`
     margin: 0 0.5rem;
     letter-spacing: 1px;
     padding: 0.375rem 0.75rem;
-    color: #27AE60;
+    color: #27ae60;
     cursor: pointer;
     transition: var(--transition);
     border-radius: var(--radius);
   }
   .filter-btn:hover {
-    background: #27AE60;
+    background: #27ae60;
     color: var(--clr-white);
   }
 `;

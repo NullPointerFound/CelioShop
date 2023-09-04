@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,24 +11,10 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Navbar from "../components/Navbar/Navbar";
+import { useUserContext } from "../contexts/UserContext/UserContext";
+import { ServiceUser } from "../services/UserService";
+import { ToastContainer, toast } from "react-toastify";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 const theme = createTheme({
   status: {
@@ -47,19 +33,49 @@ const theme = createTheme({
 });
 
 export default function Register() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [userName, setUsername] = useState("")
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [user, setUser] = useUserContext();
+
+  const registerHandler = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    await ServiceUser.SignUp(
+      {
+        fullName: firstName + ' ' + lastName,
+        username: userName,
+        email: email,
+        password: password,
+      },
+      
+    )
+      .then((res) => {
+        toast.success("You have succesfully created your acount!")
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast.error(Object.values(err.response.data)[1]);
+        setLoading(false);
+        console.log(err)
+      });
   };
+
+  useEffect(() => {
+    if(user?.status === "completed" && user?.user?.accessToken){
+        window.location.replace('/')
+    }
+  }, [user])
 
   return (
     <>
       <Navbar />
-
+      <ToastContainer/>
       <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
@@ -80,7 +96,7 @@ export default function Register() {
             <Box
               component="form"
               noValidate
-              onSubmit={handleSubmit}
+              onSubmit={registerHandler}
               sx={{ mt: 3 }}
             >
               <Grid container spacing={2}>
@@ -93,6 +109,8 @@ export default function Register() {
                     id="firstName"
                     label="First Name"
                     autoFocus
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -103,6 +121,8 @@ export default function Register() {
                     label="Last Name"
                     name="lastName"
                     autoComplete="family-name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -113,6 +133,21 @@ export default function Register() {
                     label="Email Address"
                     name="email"
                     autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
+                    autoComplete="username"
+                    value={userName}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -124,6 +159,8 @@ export default function Register() {
                     type="password"
                     id="password"
                     autoComplete="new-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </Grid>
               </Grid>

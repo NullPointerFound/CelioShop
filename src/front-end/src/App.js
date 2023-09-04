@@ -7,6 +7,9 @@ import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import "./app.scss";
 import ProductList from "./components/Products/ProductList";
+import Cart from "./pages/Cart";
+import History from "./pages/History";
+import Error from "./pages/Error";
 
 const Layout = () => {
   return (
@@ -32,6 +35,21 @@ const router = createBrowserRouter([
     path: "/register",
     element: <Register />,
   },
+  {
+    path: `/product/:id`,
+    element: <ProductPage/>
+  },
+  {
+    path: `/cart`,
+    element: <Cart/>
+  },
+  {
+    path: `/history`,
+    element: <History/>
+  },
+  {path:'*',
+   element: <Error/> 
+}
 ]);
 
 function App() {

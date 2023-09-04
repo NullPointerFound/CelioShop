@@ -17,8 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/api/v1/order")
 public class OrderController {
-
-
     private OrderService orderService;
 
     @SecurityRequirement(

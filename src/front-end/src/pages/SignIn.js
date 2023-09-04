@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,6 +13,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Navbar from "../components/Navbar/Navbar";
+import { useUserContext } from "../contexts/UserContext/UserContext";
+import { ServiceUser } from "../services/UserService";
+import { ToastContainer, toast } from "react-toastify";
 
 const theme = createTheme({
   status: {
@@ -29,19 +32,44 @@ const theme = createTheme({
     },
   },
 });
+
 function SignIn() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [user, setUser] = useUserContext();
+
+  const loginHandler = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    await ServiceUser.Login({
+      usernameOrEmail: email,
+      password: password,
+    })
+      .then((res) => {
+        localStorage.setItem("userInfo", JSON.stringify(res));
+        setUser({ user: res, status: "completed" });
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast.error(err?.response?.data?.error);
+        setLoading(false);
+        console.log(err);
+      });
   };
+
+  useEffect(() => {
+    if (user?.status === "completed" && user?.user?.accessToken) {
+      window.location.replace("/");
+    }
+  }, [user]);
 
   return (
     <>
       <Navbar />
+      <ToastContainer />
       <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
@@ -61,7 +89,7 @@ function SignIn() {
             </Typography>
             <Box
               component="form"
-              onSubmit={handleSubmit}
+              onSubmit={loginHandler}
               noValidate
               sx={{ mt: 1 }}
             >
@@ -74,6 +102,8 @@ function SignIn() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <TextField
                 margin="normal"
@@ -84,6 +114,8 @@ function SignIn() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}

@@ -64,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
             newProduct.setProductCategory(category);
         }
 
-
+        // checking if the sku is unique or not
         checkSkuExist(newProduct.getSku());
 
         newProduct.setUser(user);
@@ -100,7 +100,6 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDtoResponse> getAllProducts() {
 
         List<Product> products = productRepository.findAll();
-
 
         // Convert the entities found to DTOs
         List<ProductDtoResponse> productDtoList = products.stream().map(
@@ -157,11 +156,12 @@ public class ProductServiceImpl implements ProductService {
         ProductCategory productCategory = productCategoryRepository.findById(categoryId).orElseThrow(
                 ()->  new ResourceNotFound("Category","ID",categoryId)
         );
-            List<Product> productList = productRepository.findByProductCategory(productCategory);
 
-            return productList.stream().map(
-                        product -> modelMapper.map(product,ProductDtoResponse.class)
-                        ).collect(Collectors.toList());
+        List<Product> productList = productRepository.findByProductCategory(productCategory);
+
+        return productList.stream().map(
+                product -> modelMapper.map(product,ProductDtoResponse.class)
+        ).collect(Collectors.toList());
 
         }
 

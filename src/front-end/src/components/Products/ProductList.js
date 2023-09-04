@@ -1,25 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import ProductItem from "./ProductItem";
 import { useState } from "react";
 import menu from "../../data";
 import items from "../../data";
 import Categories from "../Categories";
+import { CategoriesService } from "../../services/CategoryService";
 
-const allCategories = ["all", ...new Set(items.map((item) => item.category))];
+
 
 const ProductList = () => {
-  const [categoryItems, setCategoryItems] = useState(menu);
-  const [categories, setCategories] = useState(allCategories);
 
-  const filterItems = (category) => {
-    if (category === "all") {
-      setCategoryItems(menu);
-      return;
+  const [categories, setCategories] = useState(null)
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [categoriesError, setCategoriesError] = useState(null)
+
+  useEffect(() => {
+    setCategoriesError(null)
+    const getCategories = async () => {
+      await CategoriesService.Get_All_Categories().then((res) => {
+        setCategories(res)
+      }).catch((e) => {
+        setCategoriesError(e.message)
+      })
     }
-    const newItems = menu.filter((item) => item.category === category);
-    setCategoryItems(newItems);
-  };
+
+    getCategories()
+  }, [])
+
+  
   return (
     <Wrapper className="section">
       <main>
@@ -28,8 +37,8 @@ const ProductList = () => {
             <h2>our Products</h2>
             <div className="underline"></div>
           </div>
-          <Categories categories={categories} filterItems={filterItems} />
-          <ProductItem items={categoryItems} />
+          <Categories categories={categories} setSelectedCategory={setSelectedCategory} />
+          <ProductItem selectedCategory={selectedCategory} />
         </section>
       </main>
     </Wrapper>

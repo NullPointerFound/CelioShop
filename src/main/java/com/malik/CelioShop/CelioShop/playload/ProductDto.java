@@ -13,9 +13,7 @@ import java.time.LocalDateTime;
 @Data
 public class ProductDto {
 
-
     private Long id;
-
     @NotEmpty
     @Size(min = 4, max = 100)
     private String name;
