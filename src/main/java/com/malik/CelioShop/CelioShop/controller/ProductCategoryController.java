@@ -1,6 +1,6 @@
 package com.malik.CelioShop.CelioShop.controller;
 
-import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;
+import com.malik.CelioShop.CelioShop.playload.product.ProductCategoryDto;
 import com.malik.CelioShop.CelioShop.service.ProductCategoryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;

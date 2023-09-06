@@ -1,10 +1,9 @@
 package com.malik.CelioShop.CelioShop.service;
 
-import com.malik.CelioShop.CelioShop.playload.ProductDto;
-import com.malik.CelioShop.CelioShop.playload.ProductDtoResponse;
-import org.springframework.web.multipart.MultipartFile;
+import com.malik.CelioShop.CelioShop.playload.product.PageProductDtoResponse;
+import com.malik.CelioShop.CelioShop.playload.product.ProductDto;
+import com.malik.CelioShop.CelioShop.playload.product.ProductDtoResponse;
 
-import java.io.IOException;
 import java.util.List;
 
 
@@ -13,13 +12,13 @@ public interface ProductService {
 
     ProductDtoResponse getProductById(Long productId);
 
-    List<ProductDtoResponse> getAllProducts();
+    PageProductDtoResponse getAllProducts(int pageNumber, int pageSize, String sortBy, String sortDir);
 
     void deleteProductById(Long productId);
 
     ProductDtoResponse updateProductById(Long productId, ProductDto productDto);
 
-    List<ProductDtoResponse> getProductsByCategoryId(Long categoryId);
+    List<ProductDtoResponse> getProductsByCategoryId(Long categoryId, int pageNumber, int pageSize, String sortBy, String sortDir);
 
-    List<ProductDtoResponse> searchProduct(String query);
+    PageProductDtoResponse searchProduct(String query, int pageNumber, int pageSize, String sortBy, String sortDir);
 }

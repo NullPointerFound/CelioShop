@@ -1,6 +1,6 @@
 package com.malik.CelioShop.CelioShop.service;
 
-import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;
+import com.malik.CelioShop.CelioShop.playload.product.ProductCategoryDto;
 
 import java.util.List;
 

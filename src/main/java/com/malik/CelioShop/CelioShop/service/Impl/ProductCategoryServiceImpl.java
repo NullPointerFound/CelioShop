@@ -4,7 +4,7 @@ import com.malik.CelioShop.CelioShop.entity.product.Product;
 import com.malik.CelioShop.CelioShop.entity.product.ProductCategory;
 import com.malik.CelioShop.CelioShop.exception.ResourceAlreadyExist;
 import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
-import com.malik.CelioShop.CelioShop.playload.ProductCategoryDto;
+import com.malik.CelioShop.CelioShop.playload.product.ProductCategoryDto;
 import com.malik.CelioShop.CelioShop.repository.ProductCategoryRepository;
 import com.malik.CelioShop.CelioShop.service.ProductCategoryService;
 import lombok.AllArgsConstructor;

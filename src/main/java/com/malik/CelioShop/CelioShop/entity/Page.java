@@ -29,7 +29,7 @@ public class Page {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String Title;
+    private String title;
 
     private String content;
 
@@ -48,11 +48,11 @@ public class Page {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Page page = (Page) o;
-        return id.equals(page.id) && Title.equals(page.Title) && Objects.equals(content, page.content) && priority.equals(page.priority);
+        return id.equals(page.id) && title.equals(page.title) && Objects.equals(content, page.content) && priority.equals(page.priority);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, Title, content, priority);
+        return Objects.hash(id, title, content, priority);
     }
 }

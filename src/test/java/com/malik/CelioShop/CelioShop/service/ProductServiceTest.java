@@ -2,8 +2,7 @@ package com.malik.CelioShop.CelioShop.service;
 
 import com.malik.CelioShop.CelioShop.entity.product.Product;
 import com.malik.CelioShop.CelioShop.entity.product.ProductCategory;
-import com.malik.CelioShop.CelioShop.playload.ProductDto;
-import com.malik.CelioShop.CelioShop.playload.ProductDtoResponse;
+import com.malik.CelioShop.CelioShop.playload.product.ProductDtoResponse;
 import com.malik.CelioShop.CelioShop.repository.ProductCategoryRepository;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.service.Impl.ProductServiceImpl;

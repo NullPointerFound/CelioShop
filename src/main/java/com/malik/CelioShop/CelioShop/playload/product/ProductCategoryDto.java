@@ -1,4 +1,4 @@
-package com.malik.CelioShop.CelioShop.playload;
+package com.malik.CelioShop.CelioShop.playload.product;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

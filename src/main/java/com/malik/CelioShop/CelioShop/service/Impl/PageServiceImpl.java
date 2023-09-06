@@ -1,19 +1,19 @@
 package com.malik.CelioShop.CelioShop.service.Impl;
 
 import com.malik.CelioShop.CelioShop.entity.Page;
-import com.malik.CelioShop.CelioShop.entity.product.Product;
 import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
 import com.malik.CelioShop.CelioShop.playload.PageDto;
-import com.malik.CelioShop.CelioShop.playload.ProductDtoResponse;
 import com.malik.CelioShop.CelioShop.repository.PageRepository;
 import com.malik.CelioShop.CelioShop.service.PageService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
+@Service
 public class PageServiceImpl implements PageService {
 
     private PageRepository pageRepository;

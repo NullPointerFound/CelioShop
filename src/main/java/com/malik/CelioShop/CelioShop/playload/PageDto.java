@@ -1,23 +1,28 @@
 package com.malik.CelioShop.CelioShop.playload;
 
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class PageDto {
 
+
     private Long id;
 
-    private String Title;
+    @NotEmpty
+    @NotBlank
+    @Size(min = 4, max = 100)
+    private String title;
 
+    @NotEmpty
     private String content;
 
+    @NotEmpty
     private Integer priority;
 
 }
