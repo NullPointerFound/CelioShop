@@ -1,9 +1,11 @@
 package com.malik.CelioShop.CelioShop.controller;
 
-import com.malik.CelioShop.CelioShop.playload.ReviewDto;
+import com.malik.CelioShop.CelioShop.playload.product.PageProductDtoResponse;
+import com.malik.CelioShop.CelioShop.playload.review.PageReviewDtoResponse;
+import com.malik.CelioShop.CelioShop.playload.review.ReviewDto;
 import com.malik.CelioShop.CelioShop.playload.ReviewDtoResponse;
-import com.malik.CelioShop.CelioShop.service.ProductService;
 import com.malik.CelioShop.CelioShop.service.ReviewService;
+import com.malik.CelioShop.CelioShop.utils.AppConstants;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,13 +23,19 @@ public class ReviewController {
 
     private ReviewService reviewService;
 
+
     @SecurityRequirement(
             name = "Bear Authentication"
     )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/reviews")
-    public ResponseEntity<List<ReviewDtoResponse>> getAllReviews(){
-        return new ResponseEntity<>(reviewService.getAllReviews(), HttpStatus.OK);
+    public ResponseEntity<PageReviewDtoResponse> getAllReviews(
+            @RequestParam(value = "pageNumber", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+    ){
+        return new ResponseEntity<>(reviewService.getAllReviews(pageNumber, pageSize, sortBy, sortDir), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -38,8 +46,12 @@ public class ReviewController {
     }
 
     @GetMapping("/product/{productId}/reviews")
-    public ResponseEntity<List<ReviewDtoResponse>> getReviewsByProductId(@PathVariable Long productId){
-        return new ResponseEntity<>(reviewService.getReviewsByProductId(productId), HttpStatus.OK);
+    public ResponseEntity<PageReviewDtoResponse> getReviewsByProductId(@PathVariable Long productId,
+                                                                         @RequestParam(value = "pageNumber", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNumber,
+                                                                         @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                                                         @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+                                                                         @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir){
+        return new ResponseEntity<>(reviewService.getReviewsByProductId(productId,pageNumber, pageSize, sortBy, sortDir), HttpStatus.OK);
     }
 
     @SecurityRequirement(

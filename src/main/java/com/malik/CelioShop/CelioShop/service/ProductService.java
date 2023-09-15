@@ -18,7 +18,7 @@ public interface ProductService {
 
     ProductDtoResponse updateProductById(Long productId, ProductDto productDto);
 
-    List<ProductDtoResponse> getProductsByCategoryId(Long categoryId, int pageNumber, int pageSize, String sortBy, String sortDir);
+    PageProductDtoResponse getProductsByCategoryId(Long categoryId, int pageNumber, int pageSize, String sortBy, String sortDir);
 
     PageProductDtoResponse searchProduct(String query, int pageNumber, int pageSize, String sortBy, String sortDir);
 }

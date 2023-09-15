@@ -1,4 +1,4 @@
-package com.malik.CelioShop.CelioShop.playload;
+package com.malik.CelioShop.CelioShop.playload.review;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

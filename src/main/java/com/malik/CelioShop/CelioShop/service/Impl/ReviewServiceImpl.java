@@ -5,19 +5,22 @@ import com.malik.CelioShop.CelioShop.entity.review.Review;
 import com.malik.CelioShop.CelioShop.entity.user.User;
 import com.malik.CelioShop.CelioShop.exception.CelioShopApiException;
 import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
-import com.malik.CelioShop.CelioShop.playload.ReviewDto;
+import com.malik.CelioShop.CelioShop.playload.product.ProductDtoResponse;
+import com.malik.CelioShop.CelioShop.playload.review.PageReviewDtoResponse;
+import com.malik.CelioShop.CelioShop.playload.review.ReviewDto;
 import com.malik.CelioShop.CelioShop.playload.ReviewDtoResponse;
+import com.malik.CelioShop.CelioShop.playload.product.PageProductDtoResponse;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.repository.ReviewRepository;
 import com.malik.CelioShop.CelioShop.service.ReviewService;
 import com.malik.CelioShop.CelioShop.service.ServiceHelper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,17 +33,7 @@ public class ReviewServiceImpl implements ReviewService {
     private ModelMapper modelMapper;
     private ServiceHelper serviceHelper;
 
-    @Override
-    public List<ReviewDtoResponse> getAllReviews() {
 
-        List<Review> allReviews = reviewRepository.findAll();
-
-        List<ReviewDtoResponse> allReviewsDto = allReviews.stream().map(
-                review -> modelMapper.map(review,ReviewDtoResponse.class)
-        ).collect(Collectors.toList());
-
-        return allReviewsDto;
-    }
 
     @Override
     public ReviewDtoResponse getReviewById(Long reviewId) {
@@ -76,6 +69,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void deleteReviewById(Long reviewId) {
+
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new ResourceNotFound("Review","ID",reviewId)
         );
@@ -84,18 +78,58 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewDtoResponse> getReviewsByProductId(Long productId) {
+    public PageReviewDtoResponse getAllReviews(int pageNumber, int pageSize, String sortBy, String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+        // Retrieve the products
+        Page<Review> reviewPage = reviewRepository.findAll(pageable);
+
+
+        PageReviewDtoResponse pageReviewDtoResponse = getPageReviewDtoResponse(reviewPage);
+
+        return pageReviewDtoResponse;
+
+    }
+    @Override
+    public PageReviewDtoResponse getReviewsByProductId(Long productId, int pageNumber, int pageSize, String sortBy, String sortDir) {
+
         Product product = productRepository.findById(productId).orElseThrow(
                 ()-> new ResourceNotFound("Product","ID",productId)
         );
 
         List<Review> reviews = reviewRepository.findByProduct(product);
 
-        List<ReviewDtoResponse> reviewDtoList = reviews.stream().map(
-                review -> modelMapper.map(review, ReviewDtoResponse.class)
-        ).collect(Collectors.toList());
+        Page<Review> pageableReviews = convertReviewListToPageable(pageNumber, pageSize, sortBy, sortDir, reviews);
 
-        return reviewDtoList;
+        PageReviewDtoResponse pageReviewDtoResponse = getPageReviewDtoResponse(pageableReviews);
+
+        return pageReviewDtoResponse;
+
+    }
+
+    private  Page<Review> convertReviewListToPageable(int pageNumber, int pageSize, String sortBy, String sortDir, List<Review> reviewList) {
+
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        Pageable pageRequest = createPageRequestUsing(pageNumber, pageSize);
+
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), reviewList.size());
+
+        List<Review> pageContent = reviewList.subList(start, end);
+
+        Page<Review> pageableReviews =  new PageImpl<>(pageContent, pageRequest, reviewList.size());
+
+        return pageableReviews;
+
+
+    }
+    private Pageable createPageRequestUsing(int page, int size) {
+        return PageRequest.of(page, size);
     }
 
     @Override
@@ -142,5 +176,27 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         return modelMapper.map(reviewRepository.save(review),ReviewDtoResponse.class);
+    }
+
+    // extract from Page<Product> products and convert them to ProductDto and assign the result to PageProductDtoResponse
+    private PageReviewDtoResponse getPageReviewDtoResponse(Page<Review> reviewPage) {
+
+        List<Review> reviewList = reviewPage.getContent();
+
+        // Convert the products found to DTOs
+        List<ReviewDto> reviewDtoList = reviewList.stream().map(
+                review -> modelMapper.map(review, ReviewDto.class)
+        ).collect(Collectors.toList());
+
+
+        // Create PageProductDtoResponse instance
+        PageReviewDtoResponse pageReviewDtoResponse = new PageReviewDtoResponse();
+        pageReviewDtoResponse.setPageNumber(reviewPage.getNumber());
+        pageReviewDtoResponse.setPageSize(reviewPage.getSize());
+        pageReviewDtoResponse.setTotalElements(reviewPage.getTotalElements());
+        pageReviewDtoResponse.setTotalPages(reviewPage.getTotalPages());
+        pageReviewDtoResponse.setLast(reviewPage.isLast());
+        pageReviewDtoResponse.setContent(reviewDtoList);
+        return pageReviewDtoResponse;
     }
 }

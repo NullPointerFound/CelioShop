@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1")
-
 public class ProductController {
 
     private ProductService productService;
@@ -71,7 +70,7 @@ public class ProductController {
     }
 
     @GetMapping("/product/category/{categoryId}")
-    public ResponseEntity<List<ProductDtoResponse>> getProductsByCategoryId(@PathVariable(value = "categoryId") Long categoryId,
+    public ResponseEntity<PageProductDtoResponse> getProductsByCategoryId(@PathVariable(value = "categoryId") Long categoryId,
                                                                             @RequestParam(value = "pageNumber", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNumber,
                                                                             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                                                             @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,

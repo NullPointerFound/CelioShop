@@ -93,7 +93,6 @@ public class ProductServiceImpl implements ProductService {
 
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
-
         // create Pageable instance
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
@@ -106,26 +105,6 @@ public class ProductServiceImpl implements ProductService {
         return pageProductDtoResponse;
     }
 
-    // extract from Page<Product> products and convert them to ProductDto and assign the result to PageProductDtoResponse
-    private PageProductDtoResponse getPageProductDtoResponse(Page<Product> productsPage) {
-
-        List<Product> productList = productsPage.getContent();
-
-        // Convert the products found to DTOs
-        List<ProductDtoResponse> productDtoList = productList.stream().map(
-                product -> modelMapper.map(product, ProductDtoResponse.class)
-        ).collect(Collectors.toList());
-
-        // Create PageProductDtoResponse instance
-        PageProductDtoResponse pageProductDtoResponse = new PageProductDtoResponse();
-        pageProductDtoResponse.setPageNumber(productsPage.getNumber());
-        pageProductDtoResponse.setPageSize(productsPage.getSize());
-        pageProductDtoResponse.setTotalElements(productsPage.getTotalElements());
-        pageProductDtoResponse.setTotalPages(productsPage.getTotalPages());
-        pageProductDtoResponse.setLast(productsPage.isLast());
-        pageProductDtoResponse.setContent(productDtoList);
-        return pageProductDtoResponse;
-    }
 
     @Override
     public void deleteProductById(Long productId) {
@@ -169,7 +148,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDtoResponse> getProductsByCategoryId(Long categoryId, int pageNumber, int pageSize, String sortBy, String sortDir) {
+    public PageProductDtoResponse getProductsByCategoryId(Long categoryId, int pageNumber, int pageSize, String sortBy, String sortDir) {
 
         ProductCategory productCategory = productCategoryRepository.findById(categoryId).orElseThrow(
                 () -> new ResourceNotFound("Category", "ID", categoryId)
@@ -177,40 +156,68 @@ public class ProductServiceImpl implements ProductService {
 
         List<Product> productList = productRepository.findByProductCategory(productCategory);
 
-        return productList.stream().map(
-                product -> modelMapper.map(product, ProductDtoResponse.class)
-        ).collect(Collectors.toList());
+        Page<Product> pageableProducts = convertProductsListToPageable(pageNumber, pageSize, sortBy, sortDir, productList);
+
+        PageProductDtoResponse pageProductDtoResponse = getPageProductDtoResponse(pageableProducts);
+
+        return pageProductDtoResponse;
+
 
     }
 
     @Override
     public PageProductDtoResponse searchProduct(String query, int pageNumber, int pageSize, String sortBy, String sortDir) {
 
+        List<Product> productsFound = productRepository.searchProduct(query);
+
+        Page<Product> pageableProducts = convertProductsListToPageable(pageNumber, pageSize, sortBy, sortDir, productsFound);
+
+        PageProductDtoResponse pageProductDtoResponse = getPageProductDtoResponse(pageableProducts);
+
+        return pageProductDtoResponse;
+
+    }
+
+    private  Page<Product> convertProductsListToPageable(int pageNumber, int pageSize, String sortBy, String sortDir, List<Product> productsFound) {
 
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         Pageable pageRequest = createPageRequestUsing(pageNumber, pageSize);
 
-        List<Product> productsFound = productRepository.searchProduct(query);
-
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start + pageRequest.getPageSize()), productsFound.size());
 
         List<Product> pageContent = productsFound.subList(start, end);
+
         Page<Product> pageableProducts =  new PageImpl<>(pageContent, pageRequest, productsFound.size());
 
-        PageProductDtoResponse pageProductDtoResponse = getPageProductDtoResponse(pageableProducts);
+        return pageableProducts;
 
 
-//        List<ProductDtoResponse> productFoundDto = productsFound.stream().map(
-//                product -> modelMapper.map(product, ProductDtoResponse.class)
-//        ).collect(Collectors.toList());
-//
-        return pageProductDtoResponse;
     }
-
 
     private Pageable createPageRequestUsing(int page, int size) {
         return PageRequest.of(page, size);
+    }
+
+    // extract from Page<Product> products and convert them to ProductDto and assign the result to PageProductDtoResponse
+    private PageProductDtoResponse getPageProductDtoResponse(Page<Product> productsPage) {
+
+        List<Product> productList = productsPage.getContent();
+
+        // Convert the products found to DTOs
+        List<ProductDtoResponse> productDtoList = productList.stream().map(
+                product -> modelMapper.map(product, ProductDtoResponse.class)
+        ).collect(Collectors.toList());
+
+        // Create PageProductDtoResponse instance
+        PageProductDtoResponse pageProductDtoResponse = new PageProductDtoResponse();
+        pageProductDtoResponse.setPageNumber(productsPage.getNumber());
+        pageProductDtoResponse.setPageSize(productsPage.getSize());
+        pageProductDtoResponse.setTotalElements(productsPage.getTotalElements());
+        pageProductDtoResponse.setTotalPages(productsPage.getTotalPages());
+        pageProductDtoResponse.setLast(productsPage.isLast());
+        pageProductDtoResponse.setContent(productDtoList);
+        return pageProductDtoResponse;
     }
 }

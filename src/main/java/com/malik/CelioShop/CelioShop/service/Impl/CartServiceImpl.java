@@ -74,7 +74,6 @@ public class CartServiceImpl implements CartService {
         if (cartItems != null){
             BigDecimal totalPrice = BigDecimal.ZERO;
             for (Cart item : cartItems){
-                log.info("malik: "+item);
                 totalPrice = totalPrice.add(item.getPrice());
             }
             cartItem.setItems(cartItems);

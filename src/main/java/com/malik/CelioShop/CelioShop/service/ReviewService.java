@@ -1,12 +1,14 @@
 package com.malik.CelioShop.CelioShop.service;
 
-import com.malik.CelioShop.CelioShop.playload.ReviewDto;
+import com.malik.CelioShop.CelioShop.playload.product.PageProductDtoResponse;
+import com.malik.CelioShop.CelioShop.playload.review.PageReviewDtoResponse;
+import com.malik.CelioShop.CelioShop.playload.review.ReviewDto;
 import com.malik.CelioShop.CelioShop.playload.ReviewDtoResponse;
 
 import java.util.List;
 
 public interface ReviewService {
-    List<ReviewDtoResponse> getAllReviews();
+    PageReviewDtoResponse getAllReviews(int pageNumber, int pageSize, String sortBy, String sortDir);
 
     ReviewDtoResponse getReviewById(Long reviewId);
 
@@ -16,7 +18,7 @@ public interface ReviewService {
 
     ReviewDtoResponse updateMyReview(ReviewDto reviewDto, Long reviewId);
 
-    List<ReviewDtoResponse> getReviewsByProductId(Long productId);
+    PageReviewDtoResponse getReviewsByProductId(Long productId, int pageNumber, int pageSize, String sortBy, String sortDir);
 
     void deleteMyReviewById(Long reviewId);
 }
