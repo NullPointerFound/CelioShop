@@ -27,6 +27,9 @@ public class ProductDto {
     @Min(value=0, message= "price couldn't be negative or empty")
     private BigDecimal price;
 
+    @Min(value=0, message= "price couldn't be negative or empty")
+    private BigDecimal cost;
+
     @Min(value=0, message= "quantity couldn't be negative or empty")
     private Integer quantity;
 
