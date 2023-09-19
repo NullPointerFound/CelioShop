@@ -1,9 +1,9 @@
 package com.malik.CelioShop.CelioShop.service.Impl;
 
 import com.malik.CelioShop.CelioShop.entity.Cart;
-import com.malik.CelioShop.CelioShop.entity.order.Order;
 import com.malik.CelioShop.CelioShop.entity.order.OrderDetail;
 import com.malik.CelioShop.CelioShop.entity.order.OrderStatus;
+import com.malik.CelioShop.CelioShop.entity.order.Orders;
 import com.malik.CelioShop.CelioShop.entity.order.PaymentMethod;
 import com.malik.CelioShop.CelioShop.entity.user.User;
 import com.malik.CelioShop.CelioShop.exception.CelioShopApiException;
@@ -20,7 +20,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
+
+import static com.malik.CelioShop.CelioShop.utils.AppConstants.*;
 
 @AllArgsConstructor
 @Service
@@ -50,12 +53,16 @@ public class OrderServiceImpl implements OrderService {
             }
         });
 
-        Order newOrder = new Order();
+        Orders newOrder = new Orders();
         newOrder.setAddress(checkoutDto.getAddress());
         newOrder.setPhoneNumber(checkoutDto.getPhoneNumber());
         newOrder.setOrderStatus(OrderStatus.PROCESSING);
         newOrder.setPaymentMethod(PaymentMethod.CASH_ON_DELIVERY);
-        newOrder.setSubtotal(cart.getTotalPrice());
+        newOrder.setSubTotal(cart.getSubTotal());
+        newOrder.setTaxPercentage(cart.getTaxPercentage());
+        newOrder.setShippingCost(cart.getShippingCost());
+        newOrder.setTaxPaid(cart.getTaxCost());
+        newOrder.setTotal(newOrder.getSubTotal().add(newOrder.getShippingCost()).add(newOrder.getTaxPaid()));
         newOrder.setUser(user);
         orderRepository.save(newOrder);
 
@@ -65,6 +72,7 @@ public class OrderServiceImpl implements OrderService {
             orderDetail.setUnitPrice(item.getPrice());
             orderDetail.setOrder(newOrder);
             orderDetail.setProduct(item.getProduct());
+            orderDetail.setSubtotal(item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
             orderDetailRepository.save(orderDetail);
             int remainingQuantity = item.getProduct().getQuantity() - item.getQuantity();
             productRepository.updateProductQuantity(item.getProduct().getId(),remainingQuantity);
@@ -74,11 +82,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getUserOrders() {
+    public List<Orders> getUserOrders() {
 
         User authenticatedUser = serviceHelper.getAuthenticatedUser();
 
-        List<Order> orderList = orderRepository.findByUser(authenticatedUser);
+        List<Orders> orderList = orderRepository.findByUser(authenticatedUser);
 
         return (orderList != null) ? orderList : List.of();
     }

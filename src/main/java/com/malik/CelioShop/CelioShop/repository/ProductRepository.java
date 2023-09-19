@@ -35,4 +35,16 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
             "WHERE p.id = :productId")
     @Modifying
     void updateProductQuantity(Long productId, int remainingQuantity);
+
+    @Query("SELECT " +
+            "P.name AS product_name," +
+            "OD.quantity AS quantity_sold," +
+            "O.orderDate AS sale_date" + // Add a space here
+            " FROM" +
+            " Product AS P" +
+            " INNER JOIN" +
+            " OrderDetail AS OD ON P.id = OD.product" +
+            " INNER JOIN" +
+            " Orders AS O ON OD.order = O.id")
+    List<Object[]> findProductsSold();
 }

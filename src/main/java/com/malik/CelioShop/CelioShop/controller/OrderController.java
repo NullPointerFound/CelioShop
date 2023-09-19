@@ -1,7 +1,7 @@
 package com.malik.CelioShop.CelioShop.controller;
 
-import com.malik.CelioShop.CelioShop.entity.order.Order;
-import com.malik.CelioShop.CelioShop.entity.user.User;
+
+import com.malik.CelioShop.CelioShop.entity.order.Orders;
 import com.malik.CelioShop.CelioShop.playload.CheckoutDto;
 import com.malik.CelioShop.CelioShop.service.OrderService;
 import com.malik.CelioShop.CelioShop.service.ServiceHelper;
@@ -31,8 +31,8 @@ public class OrderController {
     @SecurityRequirement(
             name = "Bear Authentication"
     )
-    @GetMapping()
-    public ResponseEntity<List<Order>> getUserOrders(){
+    @GetMapping
+    public ResponseEntity<List<Orders>> getUserOrders(){
 
         return new ResponseEntity<>(orderService.getUserOrders(), HttpStatus.OK);
     }

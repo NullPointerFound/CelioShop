@@ -27,8 +27,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "order")
-public class Order {
+@Table(name = "orders")
+public class Orders {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,7 +45,15 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    private BigDecimal subtotal;
+    private BigDecimal shippingCost;
+
+    private BigDecimal taxPercentage;
+
+    private BigDecimal taxPaid;
+
+    private BigDecimal subTotal;
+
+    private BigDecimal Total;
 
     @CreationTimestamp
     private LocalDateTime orderDate;

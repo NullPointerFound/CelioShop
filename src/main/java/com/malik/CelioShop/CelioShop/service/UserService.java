@@ -6,9 +6,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
-
-
-
     public ResponseEntity<?> registerUser(User user);
 
 }

@@ -29,8 +29,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private AuthServiceImpl registerService;
-
-
     private AuthService authService;
 
     @Operation(

@@ -20,6 +20,9 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+import static com.malik.CelioShop.CelioShop.utils.AppConstants.DEFAULT_SHIPPING_PRICE;
+import static com.malik.CelioShop.CelioShop.utils.AppConstants.DEFAULT_TAX_PERCENTAGE;
+
 
 @Slf4j
 @AllArgsConstructor
@@ -72,12 +75,20 @@ public class CartServiceImpl implements CartService {
         List<Cart> cartItems = cartRepository.findByUser(authenticatedUser);
 
         if (cartItems != null){
-            BigDecimal totalPrice = BigDecimal.ZERO;
+            BigDecimal subTotalPrice = BigDecimal.ZERO;
+
             for (Cart item : cartItems){
-                totalPrice = totalPrice.add(item.getPrice());
+                subTotalPrice = subTotalPrice.add(item.getPrice());
             }
             cartItem.setItems(cartItems);
-            cartItem.setTotalPrice(totalPrice);
+
+            cartItem.setShippingCost(DEFAULT_SHIPPING_PRICE);
+
+            cartItem.setTaxPercentage(DEFAULT_TAX_PERCENTAGE);
+            cartItem.setSubTotal(subTotalPrice);
+            BigDecimal taxPaid = (cartItem.getSubTotal().multiply(cartItem.getTaxPercentage())).divide(BigDecimal.valueOf(100));
+            cartItem.setTaxCost(taxPaid);
+            cartItem.setTotalPrice(subTotalPrice.add(cartItem.getShippingCost()).add(taxPaid));
 
         }else{
             cartItem.setItems(Collections.emptyList());

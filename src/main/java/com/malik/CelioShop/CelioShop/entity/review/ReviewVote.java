@@ -1,5 +1,6 @@
 package com.malik.CelioShop.CelioShop.entity.review;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.malik.CelioShop.CelioShop.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,10 +25,12 @@ public class ReviewVote {
 
     private Integer votes;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "review_id")
     private Review review;

@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 
 /*
@@ -56,5 +57,7 @@ public class Review {
     private User user;
 
     private Boolean visible;
+
+
 
 }

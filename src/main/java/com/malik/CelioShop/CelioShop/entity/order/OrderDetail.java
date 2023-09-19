@@ -8,8 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 
 /*
@@ -22,6 +24,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
+@Table(name = "order_detail")
 public class OrderDetail {
 
     @Id
@@ -34,12 +37,14 @@ public class OrderDetail {
 
     private BigDecimal subtotal;
 
-    private BigDecimal shippingCost;
+
+    @CreationTimestamp
+    private LocalDateTime saleDate;
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Orders order;
 
 
     @ManyToOne
