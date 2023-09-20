@@ -21,15 +21,10 @@ public class ProductMedia {
 
     private String type;
 
-    private String filePath;
+    private String path;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product productId;
 
-    public ProductMedia(String name, String type, String filePath) {
-        this.name = name;
-        this.type = type;
-        this.filePath = filePath;
-    }
 }

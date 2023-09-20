@@ -26,4 +26,28 @@ public interface StatisticsRepository extends JpaRepository<Product,Long> {
             "ORDER BY " +
             "od.saleDate DESC")
         List<Object[]> findProductsSold();
+
+    @Query("SELECT"+
+           " u.id AS user_id,"+
+           " u.username,"+
+           " u.joinedDate,"+
+           " o.subTotal AS order_subtotal,"+
+           " o.taxPaid,"+
+           " o.shippingCost,"+
+           " od.saleDate,"+
+           " od.quantity AS order_quantity,"+
+           " od.product"+
+           " FROM"+
+           " User u"+
+           " JOIN"+
+           " Orders o ON u.id = o.user"+
+           " JOIN"+
+           " OrderDetail od ON o.id = od.order"+
+           " JOIN"+
+           " Product p ON od.product = p.id"+
+           " ORDER BY"+
+           " od.saleDate DESC")
+    List<Object[]> findListOfSalesOfEachUser();
+
+
 }

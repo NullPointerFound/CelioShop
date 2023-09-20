@@ -1,6 +1,7 @@
 package com.malik.CelioShop.CelioShop.controller;
 
-import com.malik.CelioShop.CelioShop.playload.product.ProductSold;
+import com.malik.CelioShop.CelioShop.playload.statistics.ProductSold;
+import com.malik.CelioShop.CelioShop.playload.statistics.UserStats;
 import com.malik.CelioShop.CelioShop.service.StatisticsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,31 +20,17 @@ public class StatisticsController {
     private StatisticsService statisticsService;
 
     // sales statics
-    @GetMapping
+    @GetMapping("/sales")
     public ResponseEntity<List<ProductSold>> getListOfSales(){
 
         return new ResponseEntity<>(statisticsService.getListOfSales(), HttpStatus.OK);
     }
 
     // products statistics
-//    @GetMapping
-//    public ResponseEntity<List<ProductSold>> getTotalOfSalesAndReviewsOfEachProduct(){
-//
-//        return  new ResponseEntity<>(List.of(),HttpStatus.OK);
-//        //return new ResponseEntity<>(statisticsService.getTotalOfSalesAndReviewsOfEachProduct(),HttpStatus.OK);
-//    }
+    @GetMapping("/users")
+    public ResponseEntity<List<UserStats>> getListOfSalesOfEachUser(){
 
-    // reviews statics
-
-
-    // users statics
-//    @GetMapping
-//    public ResponseEntity<List<ProductSold>> getListOfUsersWithSales(){
-//
-//        return  new ResponseEntity<>(List.of(),HttpStatus.OK);
-//    }
-
-
-
+        return  new ResponseEntity<>(statisticsService.getListOfSalesOfEachUser(),HttpStatus.OK);
+    }
 
 }

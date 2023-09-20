@@ -1,9 +1,12 @@
 package com.malik.CelioShop.CelioShop.service.Impl;
 
-import com.malik.CelioShop.CelioShop.playload.product.ProductSold;
+import com.malik.CelioShop.CelioShop.entity.product.Product;
+import com.malik.CelioShop.CelioShop.playload.statistics.ProductSold;
+import com.malik.CelioShop.CelioShop.playload.statistics.UserStats;
 import com.malik.CelioShop.CelioShop.repository.StatisticsRepository;
 import com.malik.CelioShop.CelioShop.service.StatisticsService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -42,7 +45,29 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public List<ProductSold> getTotalOfSalesAndReviewsOfEachProduct() {
-        return null;
+    public List<UserStats> getListOfSalesOfEachUser() {
+
+        List<Object []> salesOfEachUserObj = statisticsRepository.findListOfSalesOfEachUser();
+
+        salesOfEachUserObj.forEach(System.out::println);
+        List<UserStats> salesOfEachUserList = salesOfEachUserObj.stream().map( item -> {
+
+
+            UserStats userStats = new UserStats();
+            userStats.setUserId((Long) item[0]);
+            userStats.setUsername((String) item[1]);
+            userStats.setUserJoinedDate((LocalDateTime) item[2]);
+            userStats.setOrderSubTotal((BigDecimal) item[3]);
+            userStats.setTaxPaid((BigDecimal) item[4]);
+            userStats.setShippingCost((BigDecimal) item[5]);
+            userStats.setSaleDate((LocalDateTime) item[6]);
+            userStats.setQuantityBought((Integer) item[7]);
+            userStats.setProduct((Product) item[8]);
+
+            return userStats;
+
+        }).collect(Collectors.toList());
+
+        return salesOfEachUserList;
     }
 }

@@ -1,4 +1,4 @@
-package com.malik.CelioShop.CelioShop.playload.product;
+package com.malik.CelioShop.CelioShop.playload.statistics;
 
 import lombok.Data;
 
