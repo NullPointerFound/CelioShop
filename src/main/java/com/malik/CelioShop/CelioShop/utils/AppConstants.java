@@ -13,4 +13,6 @@ public class AppConstants {
 
     public static final BigDecimal DEFAULT_TAX_PERCENTAGE = BigDecimal.valueOf(10);
 
+    public static final String FOLDER_MEDIA_PATH = "media/";
+
 }

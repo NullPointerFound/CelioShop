@@ -85,7 +85,7 @@ public class Product {
             orphanRemoval = true)
     private Set<Review> reviewSet;
 
-    @OneToMany(mappedBy = "productId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<ProductMedia> productMedia;
 
     @Override
