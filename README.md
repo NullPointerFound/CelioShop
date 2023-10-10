@@ -46,6 +46,9 @@ Note: This application is open source, and anyone is free to use parts of it or 
 
 <h2> Database UML </h2>
 
+<img src="./documentation_media/Screenshot uml-diagram.png">
+
+I will move the table Page to mongodb database and I'll also save in the mongodb the last 10 recent product that user visited, so, the data saved can be used to create a personalized recommendation products for each user.
 
 <h2>API Documentation</h2>
 
