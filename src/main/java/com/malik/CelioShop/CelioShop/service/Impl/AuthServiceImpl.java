@@ -28,7 +28,6 @@ public class AuthServiceImpl implements AuthService {
     private RoleRepository roleRepository;
     private ModelMapper modelMapper;
     private PasswordEncoder passwordEncoder;
-
     private AuthenticationManager authenticationManager;
 
     private JwtTokenProvider jwtTokenProvider;

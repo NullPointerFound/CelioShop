@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Optional;
 
 import static com.malik.CelioShop.CelioShop.utils.AppConstants.FOLDER_MEDIA_PATH;
 
@@ -23,13 +22,12 @@ public class MediaServiceImpl implements MediaService {
 
     private ProductMediaRepository productMediaRepository;
     private ProductRepository productRepository;
+    private ServiceHelper serviceHelper;
 
     @Override
     public String uploadMedia(MultipartFile media, long productId) throws IOException{
 
-        Product product = productRepository.findById(productId).orElseThrow(
-                () -> new ResourceNotFound("Product", "ID", productId)
-        );
+        Product product = serviceHelper.getProductByIdOrThrowNotFoundException(productId);
 
         String relativeMediaPath = FOLDER_MEDIA_PATH + media.getOriginalFilename();
 

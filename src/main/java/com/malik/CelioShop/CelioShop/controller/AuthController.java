@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 )
 public class AuthController {
 
-    private AuthServiceImpl registerService;
     private AuthService authService;
 
     @Operation(
@@ -42,7 +41,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> registerUser( @RequestBody @Valid RegisterDto user){
 
-        registerService.registerUser(user);
+        authService.registerUser(user);
 
         log.info(String.format("registerUser new user"));
 

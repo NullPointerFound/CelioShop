@@ -5,15 +5,12 @@ import com.malik.CelioShop.CelioShop.entity.review.Review;
 import com.malik.CelioShop.CelioShop.entity.user.User;
 import com.malik.CelioShop.CelioShop.exception.CelioShopApiException;
 import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
-import com.malik.CelioShop.CelioShop.playload.product.ProductDtoResponse;
 import com.malik.CelioShop.CelioShop.playload.review.PageReviewDtoResponse;
 import com.malik.CelioShop.CelioShop.playload.review.ReviewDto;
 import com.malik.CelioShop.CelioShop.playload.ReviewDtoResponse;
-import com.malik.CelioShop.CelioShop.playload.product.PageProductDtoResponse;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.repository.ReviewRepository;
 import com.malik.CelioShop.CelioShop.service.ReviewService;
-import com.malik.CelioShop.CelioShop.service.ServiceHelper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.*;
@@ -32,8 +29,6 @@ public class ReviewServiceImpl implements ReviewService {
     private ProductRepository productRepository;
     private ModelMapper modelMapper;
     private ServiceHelper serviceHelper;
-
-
 
     @Override
     public ReviewDtoResponse getReviewById(Long reviewId) {
@@ -187,7 +182,6 @@ public class ReviewServiceImpl implements ReviewService {
         List<ReviewDto> reviewDtoList = reviewList.stream().map(
                 review -> modelMapper.map(review, ReviewDto.class)
         ).collect(Collectors.toList());
-
 
         // Create PageProductDtoResponse instance
         PageReviewDtoResponse pageReviewDtoResponse = new PageReviewDtoResponse();

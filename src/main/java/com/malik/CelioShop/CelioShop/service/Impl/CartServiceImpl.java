@@ -3,16 +3,12 @@ package com.malik.CelioShop.CelioShop.service.Impl;
 import com.malik.CelioShop.CelioShop.entity.Cart;
 import com.malik.CelioShop.CelioShop.entity.product.Product;
 import com.malik.CelioShop.CelioShop.entity.user.User;
-import com.malik.CelioShop.CelioShop.exception.CelioShopApiException;
 import com.malik.CelioShop.CelioShop.exception.ResourceNotFound;
 import com.malik.CelioShop.CelioShop.playload.CartItem;
 import com.malik.CelioShop.CelioShop.repository.CartRepository;
-import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.service.CartService;
-import com.malik.CelioShop.CelioShop.service.ServiceHelper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,27 +27,25 @@ public class CartServiceImpl implements CartService {
 
     private CartRepository cartRepository;
     private ServiceHelper serviceHelper;
-    private ProductRepository productRepository;
+    
 
     @Override
     public void addProductToCart(Long productId, Integer quantity){
 
         User authenticatedUser = serviceHelper.getAuthenticatedUser();
 
-        Product product = productRepository.findById(productId).orElseThrow(
-                ()-> new ResourceNotFound("product","ID",productId)
-        );
+        Product product = serviceHelper.getProductByIdOrThrowNotFoundException(productId);
 
         Cart cart = cartRepository.findByUserAndProduct(productId, authenticatedUser.getId());//authenticatedUser.getId());
 
         if (cart != null){
             Integer updatedQuantity = cart.getQuantity() + quantity;
-            checkQuantity(product, updatedQuantity);
+            serviceHelper.checkQuantity(product, updatedQuantity);
             cart.setQuantity(updatedQuantity);
             BigDecimal Price = cart.getPrice().add(product.getPrice().multiply(BigDecimal.valueOf(quantity)));
             cart.setPrice(Price);
         } else {
-            checkQuantity(product, quantity);
+            serviceHelper.checkQuantity(product, quantity);
             cart = new Cart();
             cart.setProduct(product);
             cart.setUser(authenticatedUser);
@@ -62,11 +56,6 @@ public class CartServiceImpl implements CartService {
         cartRepository.save(cart);
     }
 
-    private void checkQuantity(Product product, Integer quantity){
-        if (quantity > product.getQuantity()){
-            throw new CelioShopApiException("there is not enough quantity", HttpStatus.BAD_REQUEST);
-        }
-    }
 
     @Override
     public CartItem getCartOfAuthenticatedUser(){
@@ -81,9 +70,7 @@ public class CartServiceImpl implements CartService {
                 subTotalPrice = subTotalPrice.add(item.getPrice());
             }
             cartItem.setItems(cartItems);
-
             cartItem.setShippingCost(DEFAULT_SHIPPING_PRICE);
-
             cartItem.setTaxPercentage(DEFAULT_TAX_PERCENTAGE);
             cartItem.setSubTotal(subTotalPrice);
             BigDecimal taxPaid = (cartItem.getSubTotal().multiply(cartItem.getTaxPercentage())).divide(BigDecimal.valueOf(100));
@@ -118,7 +105,6 @@ public class CartServiceImpl implements CartService {
         if( cart == null ){
             throw new ResourceNotFound("Cart","Product",productId);
         }
-
         cartRepository.delete(cart);
     }
 
@@ -129,12 +115,9 @@ public class CartServiceImpl implements CartService {
         if( cartItems == null ){
             throw new ResourceNotFound("Cart","user",user.getId());
         }
-
         for( Cart item: cartItems){
             cartRepository.deleteById(item.getId());
         }
-
     }
-
 
 }

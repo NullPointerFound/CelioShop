@@ -11,13 +11,10 @@ import com.malik.CelioShop.CelioShop.playload.product.ProductDtoResponse;
 import com.malik.CelioShop.CelioShop.repository.ProductCategoryRepository;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.service.ProductService;
-import com.malik.CelioShop.CelioShop.service.ServiceHelper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.support.PageableUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

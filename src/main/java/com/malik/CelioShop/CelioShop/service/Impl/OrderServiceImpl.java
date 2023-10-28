@@ -14,7 +14,6 @@ import com.malik.CelioShop.CelioShop.repository.OrderRepository;
 import com.malik.CelioShop.CelioShop.repository.ProductRepository;
 import com.malik.CelioShop.CelioShop.service.CartService;
 import com.malik.CelioShop.CelioShop.service.OrderService;
-import com.malik.CelioShop.CelioShop.service.ServiceHelper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import static com.malik.CelioShop.CelioShop.utils.AppConstants.*;
 
 @AllArgsConstructor
 @Service
